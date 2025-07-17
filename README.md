@@ -1,16 +1,7 @@
 # 🏴‍☠️ Chest Player MF
 
-A decoupled audio player micro-frontend for Chest Music, built with React and Webpack 5 Module Federation.
+audio player micro-frontend Chest Music, built with React and Webpack 5 Module Federation.
 
-## Features
-
-- 🎵 **Full-featured audio player** with play/pause, seek, volume control
-- 📱 **Responsive design** with dedicated web and mobile skins
-- 🔗 **Module Federation** for seamless integration across platforms
-- 🎨 **Customizable UI** with multiple skin options
-- 💾 **Persistent state** with local storage support
-- 🔄 **Playlist management** with shuffle and repeat modes
-- 📱 **Capacitor compatible** for mobile app integration
 
 ## Architecture
 
@@ -168,98 +159,4 @@ function MobileApp() {
 }
 ```
 
-## API Reference
 
-### PlayerProvider
-
-```jsx
-<PlayerProvider 
-  initialPlaylist={[]}
-  onTrackChange={(track) => {}}
-  onPlayStateChange={(isPlaying) => {}}
->
-  {children}
-</PlayerProvider>
-```
-
-### usePlayer Hook
-
-```javascript
-const {
-  // State
-  currentTrack,
-  isPlaying,
-  currentTime,
-  duration,
-  volume,
-  playlist,
-  
-  // Actions
-  togglePlay,
-  nextTrack,
-  previousTrack,
-  seek,
-  changeVolume,
-  setPlaylist
-} = usePlayer();
-```
-
-### Player Component
-
-```jsx
-<Player 
-  skin=\"auto\" // \"web\" | \"mobile\" | \"auto\"
-  theme=\"dark\" // \"dark\" | \"light\"
-  showPlaylist={true}
-  className=\"custom-player\"
-/>
-```
-
-## Offline Support
-
-For Capacitor apps, copy the built assets to your app bundle:
-
-```bash
-# Copy built assets to mobile app
-cp -r dist/* mobile-app/src/assets/player-mf/
-
-# Update capacitor.config.ts
-{
-  \"server\": {
-    \"url\": \"https://your-cdn.com\",
-    \"cleartext\": true
-  }
-}
-```
-
-## Environment Variables
-
-```bash
-# Development
-NODE_ENV=development
-PLAYER_API_URL=http://localhost:3000
-
-# Production
-NODE_ENV=production
-PLAYER_CDN_URL=https://cdn.chestmusic.com/player-mf/
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details
-
-## Support
-
-For issues and feature requests, please use the GitHub Issues tab.
-
----
-
-🏴‍☠️ **Built with ❤️ by the Chest Music crew**
