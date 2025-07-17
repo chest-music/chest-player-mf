@@ -52,12 +52,20 @@ const PlayerWeb = () => {
     changeVolume,
     toggleMute,
     playlist,
-    currentIndex
+    currentIndex,
+    // Original functionality only
   } = usePlayer();
 
   const handleProgressChange = (e) => {
     const newTime = (e.target.value / 100) * duration;
     seek(newTime);
+  };
+
+  // Use original play function that matches Redux behavior
+  const handlePlayToggle = () => {
+    // The play function in the original code handles all the shared link logic internally
+    // We don't need to differentiate here
+    togglePlay();
   };
 
   const handleVolumeChange = (e) => {
@@ -145,7 +153,7 @@ const PlayerWeb = () => {
           </button>
 
           <button
-            onClick={togglePlay}
+            onClick={handlePlayToggle}
             style={{
               padding: '12px',
               borderRadius: '50%',

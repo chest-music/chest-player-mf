@@ -44,12 +44,17 @@ const PlayerMobile = () => {
     playlist,
     currentIndex,
     isPlayerOpen,
-    togglePlayer
+    togglePlayer,
+    // Keep only what's needed
   } = usePlayer();
 
   const handleProgressChange = (e) => {
     const newTime = (e.target.value / 100) * duration;
     seek(newTime);
+  };
+
+  const handlePlayToggle = () => {
+    togglePlay();
   };
 
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -106,7 +111,7 @@ const PlayerMobile = () => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            togglePlay();
+            handlePlayToggle();
           }}
           style={{
             padding: '8px',
@@ -256,7 +261,7 @@ const PlayerMobile = () => {
           </button>
 
           <button
-            onClick={togglePlay}
+            onClick={handlePlayToggle}
             style={{
               padding: '16px',
               borderRadius: '50%',

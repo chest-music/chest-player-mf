@@ -29,6 +29,18 @@ function DevApp() {
       <div className="dev-header">
         <h1>🏴‍☠️ Chest Player MF</h1>
         <p>Development Environment - Module Federation Ready</p>
+        <div style={{ 
+          marginTop: '16px', 
+          fontSize: '14px', 
+          color: '#9ca3af',
+          display: 'flex',
+          gap: '20px',
+          justifyContent: 'center'
+        }}>
+          <span>⌨️ Spacebar: Play/Pause</span>
+          <span>🎵 Persistent Playback</span>
+          <span>📱 Responsive Design</span>
+        </div>
       </div>
       
       <PlayerProvider initialPlaylist={mockPlaylist}>
