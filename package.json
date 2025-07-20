@@ -1,0 +1,70 @@
+{
+  "name": "@chest-music/player",
+  "version": "1.0.0",
+  "description": "Audio player component for Chest Music platform",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "prepare": "npm run build",
+    "dev": "rollup -c -w",
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "eslint src --ext .js,.jsx",
+    "lint:fix": "eslint src --ext .js,.jsx --fix"
+  },
+  "peerDependencies": {
+    "@heroicons/react": "^2.0.0",
+    "@reduxjs/toolkit": "^1.9.0",
+    "framer-motion": "^10.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-redux": "^8.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/preset-env": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "@rollup/plugin-babel": "^6.0.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.44.0",
+    "eslint-config-react-app": "^7.0.0",
+    "postcss": "^8.4.0",
+    "rollup": "^3.25.0",
+    "rollup-plugin-peer-deps-external": "^2.2.0",
+    "rollup-plugin-postcss": "^4.0.0",
+    "rollup-plugin-react-svg": "^3.0.3",
+    "rollup-plugin-svg": "^2.0.0",
+    "rollup-plugin-url": "^3.0.1",
+    "typescript": "^5.1.0"
+  },
+  "keywords": [
+    "react",
+    "audio",
+    "player",
+    "music",
+    "component",
+    "chest-music"
+  ],
+  "author": "Chest Music Team",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chest-music/chest-player-mf.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chest-music/chest-player-mf/issues"
+  },
+  "homepage": "https://github.com/chest-music/chest-player-mf#readme"
+}
