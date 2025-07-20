@@ -1,10 +1,10 @@
 # @chest-music/player
 
-Un paquete NPM independiente que contiene todos los componentes del reproductor de audio de Chest Music. Este paquete está diseñado para ser instalado directamente desde Git y usado como una librería React reutilizable.
+{aquete NPM independiente que contiene todos los componentes del reproductor de audio de Chest Music.
 
 ## 📦 Instalación
 
-### Instalación desde Git (Privado)
+
 
 ```bash
 npm install git+ssh://git@github.com/cexar-io/chest-player-mf.git
@@ -24,7 +24,7 @@ Asegúrate de tener instaladas las siguientes dependencias en tu proyecto princi
 npm install react react-dom react-redux @reduxjs/toolkit framer-motion @heroicons/react
 ```
 
-## 🚀 Uso Básico
+## Uso
 
 ### 1. Importar el componente
 
@@ -109,47 +109,6 @@ El player espera que tu store Redux tenga una estructura específica para el est
 - `useLazyGetTrackSourceQuery`: Hook para obtener la URL de audio de un track
 - `useUpdateTrackPlayMutation`: Hook para actualizar el contador de reproducciones
 
-### playlistActions
-
-- `reset()`: Resetea la playlist
-- `play()`: Inicia/pausa la reproducción
-- `next()`: Avanza al siguiente track
-- `previous()`: Retrocede al track anterior  
-- `playing(trackData)`: Actualiza el estado de reproducción
-
-### playerActions
-
-- `closePlayer()`: Cierra el player
-- `openPlayer()`: Abre el player
-
-## 📱 Funcionalidades
-
-- ✅ Reproductor de audio completo con controles
-- ✅ Interfaz responsive (desktop y móvil)
-- ✅ Soporte para tracks compartidos con límites de reproducción
-- ✅ Barra de progreso interactiva
-- ✅ Controles de volumen
-- ✅ Funciones de repeat y shuffle
-- ✅ Gestión de estado de reproducción
-- ✅ Integración con Redux para estado global
-
-## 🎨 Estilos
-
-Los estilos CSS están incluidos en el paquete. Asegúrate de importar el archivo CSS:
-
-```javascript
-import '@chest-music/player/dist/index.css';
-```
-
-Los estilos están basados en Tailwind CSS y son autocontenidos.
-
-## 🔒 Autenticación y Sesiones
-
-Para tracks que requieren autenticación, el player busca automáticamente el `session_id` en localStorage:
-
-```javascript
-const session = localStorage.getItem('chestmusic_session_id');
-```
 
 ## 📄 Estructura del Proyecto
 
@@ -167,25 +126,10 @@ src/
 └── assets/              # Iconos SVG
 ```
 
-## 🚨 Notas Importantes
+##  Notas
 
 1. **Dependencias**: El paquete usa peer dependencies para evitar duplicados de React/Redux
 2. **Estado Redux**: Debe mantener la estructura esperada en `store.playlist`
 3. **Inyección de Dependencias**: Todas las acciones de Redux se inyectan via props
 4. **Sesiones**: El player accede automáticamente a localStorage para sesiones
 5. **Builds**: El paquete incluye builds tanto CommonJS como ES Modules
-
-## 🔧 Desarrollo Local
-
-Para desarrollar y hacer cambios al paquete:
-
-```bash
-git clone git@github.com:cexar-io/chest-player-mf.git
-cd chest-player-mf
-pnpm install
-pnpm run build
-```
-
-## 📝 Licencia
-
-Privado - Chest Music © 2024
