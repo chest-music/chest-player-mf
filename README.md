@@ -1,10 +1,8 @@
 # @chest-music/player
 
-{aquete NPM independiente que contiene todos los componentes del reproductor de audio de Chest Music.
+Paquete NPM independiente que contiene todos los componentes del Player.
 
 ## 📦 Instalación
-
-
 
 ```bash
 npm install git+ssh://git@github.com/cexar-io/chest-player-mf.git
