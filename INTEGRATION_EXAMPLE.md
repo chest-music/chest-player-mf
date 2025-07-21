@@ -1,9 +1,5 @@
 # Ejemplo de Integración - @chest-music/player
 
-Este documento muestra cómo integrar el player en una aplicación React existente.
-
-## 📋 Ejemplo Completo
-
 ### 1. Instalación
 
 ```bash
@@ -266,8 +262,6 @@ main {
 /* El player se posiciona fixed automáticamente */
 ```
 
-## 🎯 Casos de Uso Avanzados
-
 ### Modal de Límite de Reproducciones
 
 ```javascript
@@ -306,25 +300,3 @@ export function useAuth() {
 }
 ```
 
-## 🚀 Deployment
-
-Cuando despliegues tu aplicación, asegúrate de que:
-
-1. Las dependencias peer estén instaladas
-2. El CSS del player se importe correctamente
-3. Las rutas de API estén configuradas
-4. El localStorage esté disponible para sesiones
-
-## 🔧 Troubleshooting
-
-### Player no aparece
-- Verifica que importaste el CSS
-- Revisa que la playlist tenga datos válidos
-
-### Errores de Redux
-- Asegúrate de que el store tenga la estructura correcta
-- Verifica que las acciones estén correctamente importadas
-
-### Problemas de Audio
-- Confirma que las URLs de audio sean válidas
-- Revisa los headers de autenticación para tracks privados
