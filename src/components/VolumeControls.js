@@ -4,11 +4,20 @@ import {
   SpeakerXMarkIcon, 
   ChevronDownIcon,
   ClockIcon } from '@heroicons/react/24/outline';
-import { reset } from '../app/playlist';
+// Get playlist actions from injected dependencies
+const getPlaylistActions = () => {
+  if (typeof window !== 'undefined' && window.__CHEST_PLAYER_DEPS__?.playlistActions) {
+    return window.__CHEST_PLAYER_DEPS__.playlistActions;
+  }
+  return {
+    reset: () => console.log('Reset action not injected')
+  };
+};
 
 export default function VolumeControls({ audioRef, dispatch }) {
   const [volume, setVolume] = useState(50);
   const [prevVolume, setPrevVolume] = useState(0);
+  const { reset } = getPlaylistActions();
   
   const volumeRef = useRef();
 
@@ -22,7 +31,7 @@ export default function VolumeControls({ audioRef, dispatch }) {
   }
 
   const handleClose = () => {
-    dispatch(reset())
+    reset()
   }
 
   useEffect(() => {
@@ -54,7 +63,7 @@ export default function VolumeControls({ audioRef, dispatch }) {
           value={volume}
           min={0}
           max={100}
-          className='bg-neutral-black rounded-lg h-1.5 accent-white appearance-none mr-4'
+          className='bg-neutral-black rounded-lg h-1.5 appearance-none mr-4'
           onChange={(e) => { setVolume(parseInt(e.target.value)) }} />
         <button type='button' className='p-2 test' onClick={handleClose}>
           <ChevronDownIcon className='h-6 w-6 text-white' />

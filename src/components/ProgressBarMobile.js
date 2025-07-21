@@ -27,7 +27,7 @@ export default function ProgressBar({ timeProgress, duration, progressBarRef, au
           defaultValue={0}
           step={0.05}
           className={classNames({
-            'bg-neutral-black rounded-lg accent-white appearance-none': true,
+            'bg-neutral-black rounded-lg appearance-none': true,
             'h-1.5': open,
             'h-[3px]': !open,
             'pointer-events-none': isSharedLink

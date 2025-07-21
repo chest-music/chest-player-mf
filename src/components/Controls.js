@@ -15,10 +15,10 @@ const getPlaylistActions = () => {
     return window.__CHEST_PLAYER_DEPS__.playlistActions;
   }
   return {
-    play: () => {},
-    next: () => {},
-    previous: () => {},
-    playing: () => {}
+    play: () => console.log('Play action not injected'),
+    next: () => console.log('Next action not injected'),
+    previous: () => console.log('Previous action not injected'),
+    playing: () => console.log('Playing action not injected')
   };
 };
 
@@ -33,7 +33,7 @@ export default function Controls({
   playlist
 }) {
   const playAnimationRef = useRef();
-  const { play, next, previous } = getPlaylistActions();
+  const { play, next, previous, playing } = getPlaylistActions();
 
   const repeat = useCallback(() => {
     if (audioRef.current) {
@@ -54,7 +54,7 @@ export default function Controls({
   }, [audioRef, duration, progressBarRef, setTimeProgress]);
 
   const togglePlayPause = () => {
-    dispatch(play())
+    play()
   }
   
   useEffect(() => {
@@ -63,15 +63,15 @@ export default function Controls({
       if (event.keyCode === 32 && 
           event.target.tagName !== 'INPUT' && 
           event.target.tagName !== 'TEXTAREA') {
-        event.preventDefault();  
-        dispatch(play())
+        event.preventDefault();
+        play();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [dispatch]);
+  }, [play]);
 
   const toggleLoop = () => {
     setLoop(prev => !prev);
@@ -83,7 +83,7 @@ export default function Controls({
       return;
     }
     // Cambiar al siguiente tema
-    dispatch(next());
+    next();
   }
 
   const skipBackward = () => {
@@ -92,7 +92,7 @@ export default function Controls({
       return;
     }
 
-    dispatch(previous());
+    previous();
   }
 
   const handleTrackEnd = () => {
@@ -103,7 +103,7 @@ export default function Controls({
 
     if (playlist.length > 1) {
       // Si hay más temas, pasamos al siguiente
-      dispatch(next());
+      next();
     } else {
       // Si no hay más temas:
       // 1. Reiniciamos el tiempo a 0
@@ -112,10 +112,10 @@ export default function Controls({
       }
       // 2. Actualizamos el estado para mostrar el ícono de play
       const currentTrack = playlist[0];
-      dispatch(playing({
+      playing({
         ...currentTrack,
         isPlaying: false
-      }));
+      });
     }
   }
 

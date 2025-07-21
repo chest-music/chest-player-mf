@@ -17,7 +17,7 @@ export default function ProgressBar({ timeProgress, duration, progressBarRef, au
           type='range'
           defaultValue={0}
           step={0.05}
-          className={`bg-neutral-black rounded-lg h-1.5 accent-white appearance-none ${isSharedLink ? 'pointer-events-none' : ''}`}
+          className={`bg-neutral-black rounded-lg h-1.5 appearance-none ${isSharedLink ? 'pointer-events-none' : ''}`}
           ref={progressBarRef}
           onChange={handleProgressChange}
         />

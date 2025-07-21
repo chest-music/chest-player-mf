@@ -1,4 +1,32 @@
 /* Audio Player Styles */
+
+/* Eliminar todos los bordes de focus en el player */
+.audio-player *,
+.audio-player-mobile *,
+.audio-player-mobile-open * {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+.audio-player *:focus,
+.audio-player-mobile *:focus,
+.audio-player-mobile-open *:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+.audio-player *:focus-visible,
+.audio-player-mobile *:focus-visible,
+.audio-player-mobile-open *:focus-visible {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
 .audio-player {
   @apply grid grid-cols-3 px-[60px] pt-4 pb-5 w-full fixed bottom-0 backdrop-blur-[30px];
   background: rgba(37, 41, 46, 0.6);
@@ -23,43 +51,80 @@
   @apply hover:cursor-pointer;
   position: relative;
   width: 100%;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+.player-progressbar input[type="range"]:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+.player-progressbar input[type="range"]:focus-visible {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
 }
 
 .player-progressbar input[type="range"]::before {
   @apply bg-brand-gold left-0 top-0 absolute h-full;
   content: "";
   width: var(--range-progress);
-  z-index: -1;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
 }
 
 .player-progressbar input[type="range"]::-webkit-slider-thumb {
-  @apply appearance-none bg-brand-gold w-3 h-3 rounded-full;
+  @apply bg-brand-gold w-1.5 h-1.5 rounded-full appearance-none transition-transform duration-300;
 }
 
 .player-progressbar input[type="range"]:active::-webkit-slider-thumb,
 .player-progressbar input[type="range"]:hover::-webkit-slider-thumb {
-  @apply scale-125;
+  transform: scale(2);
 }
 
 .player-volume input[type="range"] {
-  @apply w-20 h-1 bg-neutral-silver-400 rounded-lg appearance-none cursor-pointer;
+  position: relative;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+.player-volume input[type="range"]:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+.player-volume input[type="range"]:focus-visible {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
 }
 
 .player-volume input[type="range"]::before {
-  @apply bg-brand-gold left-0 top-0 absolute h-full;
+  @apply bg-white left-0 top-0 absolute h-full;
   content: "";
   width: var(--range-progress);
-  z-index: -1;
-  border-radius: 0.5rem;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
 }
 
 .player-volume input[type="range"]::-webkit-slider-thumb {
-  @apply appearance-none bg-brand-gold w-3 h-3 rounded-full;
+  @apply bg-white w-1.5 h-1.5 rounded-full appearance-none transition-transform duration-300;
 }
 
 .player-volume input[type="range"]:active::-webkit-slider-thumb,
 .player-volume input[type="range"]:hover::-webkit-slider-thumb {
-  @apply scale-125;
+  transform: scale(2);
 }
 
 .text-player-time {
@@ -67,14 +132,43 @@
   font-variant-numeric: tabular-nums;
 }
 
+.player-controls {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+.player-controls:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+.player-controls:focus-visible {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
 .player-controls path {
-  @apply fill-neutral-silver-300;
+  @apply fill-neutral-silver-200 transition duration-500;
 }
 
 .player-controls:hover path {
-  @apply fill-brand-gold;
+  @apply fill-white;
 }
 
 .player-controls-active path {
   @apply fill-brand-gold;
+}
+
+.test path {
+  @apply stroke-neutral-silver-200 transition duration-500;
+}
+
+.test:hover path {
+  @apply stroke-brand-gold;
 }

@@ -15,7 +15,8 @@ const getPlaylistActions = () => {
     return window.__CHEST_PLAYER_DEPS__.playlistActions;
   }
   return {
-    play: () => {}
+    play: () => {},
+    playing: () => {}
   };
 };
 
@@ -30,7 +31,7 @@ export default function ControlsMobile({
   playlist
 }) {
   const playAnimationRef = useRef();
-  const { play } = getPlaylistActions();
+  const { play, playing } = getPlaylistActions();
 
   const repeat = useCallback(() => {
     if (!audioRef.current || !progressBarRef.current) return;
@@ -57,8 +58,7 @@ export default function ControlsMobile({
 
   const togglePlayPause = (e) => {
     e.stopPropagation();
-    if (!audioRef.current?.src) return;
-    dispatch(play());
+    play()
   }
 
   const toggleLoop = () => {

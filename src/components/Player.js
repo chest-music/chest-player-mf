@@ -418,6 +418,8 @@ export default function Player() {
                           setTimeProgress,
                           setLoop,
                           loop,
+                          dispatch,
+                          playlist,
                         }}
                       />
                     )}
