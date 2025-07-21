@@ -1,19 +1,26 @@
 // Helper functions extracted from main app
 
-export function format(seconds) {
-  if (isNaN(seconds)) return '0:00';
-  
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = Math.floor(seconds % 60);
+function classNames(classes) {
+  const toBeClasses = Object.keys(classes).map((key) =>
+    classes[key] === true ? key : '',
+  );
+  return toBeClasses.join(' ');
+}
 
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  } else {
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+const format = {
+  time: (seconds) => {
+    if (!seconds) return '0:00';
+    if (typeof seconds === 'string') seconds = parseInt(seconds);
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+
+    return `${minutes}:${formattedSeconds}`;
   }
 }
 
-export function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+export {
+  classNames,
+  format
 }
