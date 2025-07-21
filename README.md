@@ -16,7 +16,6 @@ pnpm add git+ssh://git@github.com/cexar-io/chest-player-mf.git
 
 ### Dependencias Peer
 
-Asegúrate de tener instaladas las siguientes dependencias en tu proyecto principal:
 
 ```bash
 npm install react react-dom react-redux @reduxjs/toolkit framer-motion @heroicons/react
@@ -33,7 +32,6 @@ import '@chest-music/player/dist/index.css';
 
 ### 2. Configurar las dependencias
 
-El player requiere que proveas ciertas dependencias de tu app principal a través del componente `PlayerProvider`:
 
 ```javascript
 import { PlayerProvider } from '@chest-music/player';
@@ -78,7 +76,7 @@ function App() {
 
 ### 3. Estructura del Store Redux Requerida
 
-El player espera que tu store Redux tenga una estructura específica para el estado de la playlist:
+El player espera que el store Redux tenga una estructura específica para el estado de la playlist:
 
 ```javascript
 // Estado esperado en store.playlist
