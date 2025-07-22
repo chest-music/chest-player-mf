@@ -13,26 +13,25 @@ export default function WaveformProgressBar({
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
   const [isReady, setIsReady] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const isSharedLink = !!playlist[0]?.token;
 
-  // Efecto para detectar cuando el componente está montado
   useEffect(() => {
-    setIsMounted(true);
-    return () => setIsMounted(false);
-  }, []);
+    if (!currentTrack?.url) return;
 
-  useEffect(() => {
-    if (!isMounted || !currentTrack?.url) return;
+    let retryCount = 0;
+    const maxRetries = 10;
 
-    // Usar setTimeout para asegurar que el DOM esté listo
-    const timer = setTimeout(() => {
+    const initWaveSurfer = () => {
       if (!waveformRef.current) {
-        console.log('WaveformProgressBar: Container not ready, retrying...', {
+        retryCount++;
+        console.log(`WaveformProgressBar: Container not ready, retry ${retryCount}/${maxRetries}`, {
           container: !!waveformRef.current,
-          trackUrl: currentTrack?.url,
-          isMounted
+          trackUrl: currentTrack?.url
         });
+        
+        if (retryCount < maxRetries) {
+          setTimeout(initWaveSurfer, 100);
+        }
         return;
       }
 
@@ -85,10 +84,12 @@ export default function WaveformProgressBar({
       console.error('WaveformProgressBar: Error creating WaveSurfer:', error);
       setIsReady(false);
     }
-    }, 300); // Delay de 300ms para asegurar que el DOM esté listo
+    };
+
+    // Iniciar el primer intento después de un pequeño delay
+    setTimeout(initWaveSurfer, 100);
 
     return () => {
-      clearTimeout(timer);
       if (wavesurfer.current) {
         try {
           wavesurfer.current.destroy();
@@ -97,7 +98,7 @@ export default function WaveformProgressBar({
         }
       }
     };
-  }, [currentTrack?.url, isSharedLink, isMounted]);
+  }, [currentTrack?.url, isSharedLink]);
 
   // Sincronizar progreso con el audio element
   useEffect(() => {
@@ -127,19 +128,11 @@ export default function WaveformProgressBar({
     );
   }
 
-  // Callback ref para asegurar que el div esté disponible
-  const setWaveformRef = useCallback((node) => {
-    if (node) {
-      console.log('WaveformProgressBar: Ref set, container ready');
-      waveformRef.current = node;
-    }
-  }, []);
-
   return (
     <div className="w-full flex items-center gap-1.5 player-progressbar">
       <div className="text-sm">{format.time(timeProgress)}</div>
       <div 
-        ref={setWaveformRef} 
+        ref={waveformRef} 
         className="flex-1 h-6 rounded-lg overflow-hidden bg-neutral-black"
         style={waveformStyle}
       />
