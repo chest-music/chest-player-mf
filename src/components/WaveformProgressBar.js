@@ -13,99 +13,62 @@ export default function WaveformProgressBar({
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
   const [isReady, setIsReady] = useState(false);
-  const [containerReady, setContainerReady] = useState(false);
   const isSharedLink = !!playlist[0]?.token;
 
-  // Debug: Ver si el componente se está renderizando
-  console.log('WaveformProgressBar: Component rendering', {
-    hasTrackUrl: !!currentTrack?.url,
-    trackUrl: currentTrack?.url
-  });
-
-  // Verificar que el contenedor esté disponible
   useEffect(() => {
-    console.log('WaveformProgressBar: useEffect running, checking for container...');
-    
-    let attempts = 0;
-    const maxAttempts = 20;
-    
-    const checkContainer = () => {
-      attempts++;
-      console.log(`WaveformProgressBar: Check attempt ${attempts}/${maxAttempts}`, {
-        refCurrent: waveformRef.current,
-        refExists: !!waveformRef.current
-      });
-      
-      if (waveformRef.current) {
-        console.log('WaveformProgressBar: Container found!');
-        setContainerReady(true);
-      } else if (attempts < maxAttempts) {
-        setTimeout(checkContainer, 100);
-      } else {
-        console.error('WaveformProgressBar: Max attempts reached, container never found');
+    if (!currentTrack?.url) return;
+
+    // Esperar a que el DOM esté listo
+    const timer = setTimeout(() => {
+      if (!waveformRef.current) {
+        console.log('WaveformProgressBar: Container still not ready');
+        return;
       }
-    };
-    
-    checkContainer();
-  }, []);
 
-  // Crear WaveSurfer cuando tanto el contenedor como el track estén listos
-  useEffect(() => {
-    if (!containerReady || !currentTrack?.url || !waveformRef.current) {
-      console.log('WaveformProgressBar: Not ready yet', {
-        containerReady,
-        hasTrackUrl: !!currentTrack?.url,
-        hasContainer: !!waveformRef.current
-      });
-      return;
-    }
+      console.log('WaveformProgressBar: Initializing WaveSurfer');
 
-    console.log('WaveformProgressBar: Creating WaveSurfer instance', currentTrack.url);
-
-    try {
-      wavesurfer.current = WaveSurfer.create({
-        container: waveformRef.current,
-        waveColor: '#6B7280',
-        progressColor: '#D4AF37',
-        cursorColor: '#D4AF37',
-        height: 24,
-        normalize: true,
-        backend: 'WebAudio',
-        barWidth: 2,
-        barGap: 1,
-        barRadius: 2,
-        interact: !isSharedLink,
-        hideScrollbar: true,
-        fillParent: true
-      });
-
-      wavesurfer.current.load(currentTrack.url);
-
-      wavesurfer.current.on('ready', () => {
-        console.log('WaveformProgressBar: WaveSurfer ready');
-        setIsReady(true);
-      });
-
-      wavesurfer.current.on('seek', (progress) => {
-        if (!isSharedLink && audioRef.current) {
-          const newTime = progress * duration;
-          audioRef.current.currentTime = newTime;
+      try {
+        // Limpiar instancia anterior si existe
+        if (wavesurfer.current) {
+          wavesurfer.current.destroy();
         }
-      });
 
-      wavesurfer.current.on('click', (progress) => {
-        if (!isSharedLink && audioRef.current) {
-          const newTime = progress * duration;
-          audioRef.current.currentTime = newTime;
-        }
-      });
+        wavesurfer.current = WaveSurfer.create({
+          container: waveformRef.current,
+          waveColor: '#6B7280',
+          progressColor: '#D4AF37',
+          cursorColor: '#D4AF37',
+          height: 24,
+          normalize: true,
+          backend: 'WebAudio',
+          barWidth: 2,
+          barGap: 1,
+          barRadius: 2,
+          interact: !isSharedLink,
+          hideScrollbar: true,
+          fillParent: true
+        });
 
-    } catch (error) {
-      console.error('WaveformProgressBar: Error creating WaveSurfer:', error);
-      setIsReady(false);
-    }
+        wavesurfer.current.load(currentTrack.url);
+
+        wavesurfer.current.on('ready', () => {
+          console.log('WaveformProgressBar: Ready!');
+          setIsReady(true);
+        });
+
+        wavesurfer.current.on('seek', (progress) => {
+          if (!isSharedLink && audioRef.current) {
+            audioRef.current.currentTime = progress * duration;
+          }
+        });
+
+      } catch (error) {
+        console.error('WaveformProgressBar: Error:', error);
+      }
+    }, 500); // Timeout más largo para asegurar que el DOM esté listo
 
     return () => {
+      clearTimeout(timer);
       if (wavesurfer.current) {
         try {
           wavesurfer.current.destroy();
@@ -114,52 +77,37 @@ export default function WaveformProgressBar({
         }
       }
     };
-  }, [containerReady, currentTrack?.url, isSharedLink]);
+  }, [currentTrack?.url, isSharedLink]);
 
-  // Sincronizar progreso con el audio element
+  // Sincronizar progreso
   useEffect(() => {
     if (wavesurfer.current && isReady && duration > 0) {
       const progress = timeProgress / duration;
-      wavesurfer.current.seekTo(progress);
+      try {
+        wavesurfer.current.seekTo(progress);
+      } catch (error) {
+        // Ignorar errores de sincronización
+      }
     }
   }, [timeProgress, duration, isReady]);
-
-  const waveformStyle = {
-    opacity: isReady ? 1 : 0.5,
-    transition: 'opacity 0.3s ease',
-    cursor: isSharedLink ? 'default' : 'pointer'
-  };
-
-  // Fallback si no está listo
-  if (!isReady && (!containerReady || !currentTrack?.url)) {
-    return (
-      <div className="w-full flex items-center gap-1.5 player-progressbar">
-        <div className="text-sm">{format.time(timeProgress)}</div>
-        <div className="flex-1 h-6 rounded-lg bg-neutral-black flex items-center justify-center">
-          <span className="text-xs text-neutral-silver-300">Loading waveform...</span>
-        </div>
-        <div className="text-sm">{format.time(duration)}</div>
-      </div>
-    );
-  }
-
-  console.log('WaveformProgressBar: About to render main JSX', {
-    isReady,
-    containerReady,
-    hasTrackUrl: !!currentTrack?.url
-  });
 
   return (
     <div className="w-full flex items-center gap-1.5 player-progressbar">
       <div className="text-sm">{format.time(timeProgress)}</div>
       <div 
-        ref={(el) => {
-          console.log('WaveformProgressBar: Ref callback called', { element: el });
-          waveformRef.current = el;
-        }}
+        ref={waveformRef}
         className="flex-1 h-6 rounded-lg overflow-hidden bg-neutral-black"
-        style={waveformStyle}
-      />
+        style={{
+          opacity: isReady ? 1 : 0.3,
+          transition: 'opacity 0.3s ease'
+        }}
+      >
+        {!isReady && (
+          <div className="h-full flex items-center justify-center">
+            <span className="text-xs text-neutral-silver-400">Loading...</span>
+          </div>
+        )}
+      </div>
       <div className="text-sm">{format.time(duration)}</div>
     </div>
   );
