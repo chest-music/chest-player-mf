@@ -16,15 +16,17 @@ export default function WaveformProgressBar({
   const isSharedLink = !!playlist[0]?.token;
 
   useEffect(() => {
-    if (!waveformRef.current || !currentTrack?.url) {
-      console.log('WaveformProgressBar: Missing container or track URL', {
-        container: !!waveformRef.current,
-        trackUrl: currentTrack?.url
-      });
-      return;
-    }
+    // Usar setTimeout para asegurar que el DOM esté listo
+    const timer = setTimeout(() => {
+      if (!waveformRef.current || !currentTrack?.url) {
+        console.log('WaveformProgressBar: Missing container or track URL', {
+          container: !!waveformRef.current,
+          trackUrl: currentTrack?.url
+        });
+        return;
+      }
 
-    console.log('WaveformProgressBar: Creating WaveSurfer instance', currentTrack.url);
+      console.log('WaveformProgressBar: Creating WaveSurfer instance', currentTrack.url);
 
     // Crear instancia de WaveSurfer
     try {
@@ -73,8 +75,10 @@ export default function WaveformProgressBar({
       console.error('WaveformProgressBar: Error creating WaveSurfer:', error);
       setIsReady(false);
     }
+    }, 100); // Delay de 100ms para asegurar que el DOM esté listo
 
     return () => {
+      clearTimeout(timer);
       if (wavesurfer.current) {
         try {
           wavesurfer.current.destroy();
