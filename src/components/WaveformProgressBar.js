@@ -16,7 +16,7 @@ export default function WaveformProgressBar({
   const isSharedLink = !!playlist[0]?.token;
 
   useEffect(() => {
-    if (!waveformRef.current || !currentTrack?.src) return;
+    if (!waveformRef.current || !currentTrack?.url) return;
 
     // Crear instancia de WaveSurfer
     try {
@@ -37,8 +37,8 @@ export default function WaveformProgressBar({
     });
 
     // Cargar el audio
-    if (currentTrack?.src) {
-      wavesurfer.current.load(currentTrack.src);
+    if (currentTrack?.url) {
+      wavesurfer.current.load(currentTrack.url);
     }
 
     // Event listeners
@@ -74,7 +74,7 @@ export default function WaveformProgressBar({
         }
       }
     };
-  }, [currentTrack?.src, isSharedLink]);
+  }, [currentTrack?.url, isSharedLink]);
 
   // Sincronizar progreso con el audio element
   useEffect(() => {

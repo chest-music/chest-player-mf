@@ -72,7 +72,9 @@ export default function Player({ waveform = false }) {
   const onLoadedMetadata = () => {
     const seconds = audioRef.current.duration;
     setDuration(seconds);
-    progressBarRef.current.max = seconds;
+    if (!waveform && progressBarRef.current) {
+      progressBarRef.current.max = seconds;
+    }
   };
 
   const checkPlayLimit = () => {
@@ -338,6 +340,7 @@ export default function Player({ waveform = false }) {
                     loop,
                     dispatch,
                     playlist,
+                    waveform,
                   }}
                 />
                 {waveform ? (
@@ -434,6 +437,7 @@ export default function Player({ waveform = false }) {
                           loop,
                           dispatch,
                           playlist,
+                          waveform,
                         }}
                       />
                     )}

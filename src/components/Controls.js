@@ -30,7 +30,8 @@ export default function Controls({
   setLoop,
   loop,
   dispatch,
-  playlist
+  playlist,
+  waveform = false
 }) {
   const playAnimationRef = useRef();
   const { play, next, previous, playing } = getPlaylistActions();
@@ -42,12 +43,14 @@ export default function Controls({
   
       setTimeProgress(currentTime);
   
-      progressBarRef.current.value = currentTime;
-      
-      progressBarRef.current.style.setProperty(
-        '--range-progress',
-        `${(progressBarRef.current.value / duration) * 100}%`
-      );
+      if (!waveform && progressBarRef.current) {
+        progressBarRef.current.value = currentTime;
+        
+        progressBarRef.current.style.setProperty(
+          '--range-progress',
+          `${(progressBarRef.current.value / duration) * 100}%`
+        );
+      }
         
       playAnimationRef.current = requestAnimationFrame(repeat);
     }
