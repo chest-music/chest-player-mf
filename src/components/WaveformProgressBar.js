@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import { format } from '../utils/helpers';
 
@@ -13,15 +13,25 @@ export default function WaveformProgressBar({
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
   const [isReady, setIsReady] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const isSharedLink = !!playlist[0]?.token;
 
+  // Efecto para detectar cuando el componente está montado
   useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || !currentTrack?.url) return;
+
     // Usar setTimeout para asegurar que el DOM esté listo
     const timer = setTimeout(() => {
-      if (!waveformRef.current || !currentTrack?.url) {
-        console.log('WaveformProgressBar: Missing container or track URL', {
+      if (!waveformRef.current) {
+        console.log('WaveformProgressBar: Container not ready, retrying...', {
           container: !!waveformRef.current,
-          trackUrl: currentTrack?.url
+          trackUrl: currentTrack?.url,
+          isMounted
         });
         return;
       }
@@ -75,7 +85,7 @@ export default function WaveformProgressBar({
       console.error('WaveformProgressBar: Error creating WaveSurfer:', error);
       setIsReady(false);
     }
-    }, 100); // Delay de 100ms para asegurar que el DOM esté listo
+    }, 300); // Delay de 300ms para asegurar que el DOM esté listo
 
     return () => {
       clearTimeout(timer);
@@ -87,7 +97,7 @@ export default function WaveformProgressBar({
         }
       }
     };
-  }, [currentTrack?.url, isSharedLink]);
+  }, [currentTrack?.url, isSharedLink, isMounted]);
 
   // Sincronizar progreso con el audio element
   useEffect(() => {
@@ -117,11 +127,19 @@ export default function WaveformProgressBar({
     );
   }
 
+  // Callback ref para asegurar que el div esté disponible
+  const setWaveformRef = useCallback((node) => {
+    if (node) {
+      console.log('WaveformProgressBar: Ref set, container ready');
+      waveformRef.current = node;
+    }
+  }, []);
+
   return (
     <div className="w-full flex items-center gap-1.5 player-progressbar">
       <div className="text-sm">{format.time(timeProgress)}</div>
       <div 
-        ref={waveformRef} 
+        ref={setWaveformRef} 
         className="flex-1 h-6 rounded-lg overflow-hidden bg-neutral-black"
         style={waveformStyle}
       />
