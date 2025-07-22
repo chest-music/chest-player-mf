@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import { format } from '../utils/helpers';
 
@@ -13,81 +13,79 @@ export default function WaveformProgressBar({
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
   const [isReady, setIsReady] = useState(false);
+  const [containerReady, setContainerReady] = useState(false);
   const isSharedLink = !!playlist[0]?.token;
 
+  // Verificar que el contenedor esté disponible
   useEffect(() => {
-    if (!currentTrack?.url) return;
-
-    let retryCount = 0;
-    const maxRetries = 10;
-
-    const initWaveSurfer = () => {
-      if (!waveformRef.current) {
-        retryCount++;
-        console.log(`WaveformProgressBar: Container not ready, retry ${retryCount}/${maxRetries}`, {
-          container: !!waveformRef.current,
-          trackUrl: currentTrack?.url
-        });
-        
-        if (retryCount < maxRetries) {
-          setTimeout(initWaveSurfer, 100);
-        }
-        return;
+    const checkContainer = () => {
+      if (waveformRef.current) {
+        console.log('WaveformProgressBar: Container found!');
+        setContainerReady(true);
+      } else {
+        console.log('WaveformProgressBar: Container not found, checking again...');
+        setTimeout(checkContainer, 50);
       }
+    };
+    
+    checkContainer();
+  }, []);
 
-      console.log('WaveformProgressBar: Creating WaveSurfer instance', currentTrack.url);
-
-    // Crear instancia de WaveSurfer
-    try {
-      wavesurfer.current = WaveSurfer.create({
-      container: waveformRef.current,
-      waveColor: '#6B7280', // Neutral gray for unwaved portion
-      progressColor: '#D4AF37', // Brand gold color
-      cursorColor: '#D4AF37', // Brand gold for cursor
-      height: 24,
-      normalize: true,
-      backend: 'WebAudio',
-      barWidth: 2,
-      barGap: 1,
-      barRadius: 2,
-      interact: !isSharedLink, // Disable interaction for shared links
-      hideScrollbar: true,
-      fillParent: true
-    });
-
-    // Cargar el audio
-    if (currentTrack?.url) {
-      wavesurfer.current.load(currentTrack.url);
+  // Crear WaveSurfer cuando tanto el contenedor como el track estén listos
+  useEffect(() => {
+    if (!containerReady || !currentTrack?.url || !waveformRef.current) {
+      console.log('WaveformProgressBar: Not ready yet', {
+        containerReady,
+        hasTrackUrl: !!currentTrack?.url,
+        hasContainer: !!waveformRef.current
+      });
+      return;
     }
 
-    // Event listeners
-    wavesurfer.current.on('ready', () => {
-      console.log('WaveformProgressBar: WaveSurfer ready');
-      setIsReady(true);
-    });
+    console.log('WaveformProgressBar: Creating WaveSurfer instance', currentTrack.url);
 
-    wavesurfer.current.on('seek', (progress) => {
-      if (!isSharedLink && audioRef.current) {
-        const newTime = progress * duration;
-        audioRef.current.currentTime = newTime;
-      }
-    });
+    try {
+      wavesurfer.current = WaveSurfer.create({
+        container: waveformRef.current,
+        waveColor: '#6B7280',
+        progressColor: '#D4AF37',
+        cursorColor: '#D4AF37',
+        height: 24,
+        normalize: true,
+        backend: 'WebAudio',
+        barWidth: 2,
+        barGap: 1,
+        barRadius: 2,
+        interact: !isSharedLink,
+        hideScrollbar: true,
+        fillParent: true
+      });
 
-    wavesurfer.current.on('click', (progress) => {
-      if (!isSharedLink && audioRef.current) {
-        const newTime = progress * duration;
-        audioRef.current.currentTime = newTime;
-      }
-    });
+      wavesurfer.current.load(currentTrack.url);
+
+      wavesurfer.current.on('ready', () => {
+        console.log('WaveformProgressBar: WaveSurfer ready');
+        setIsReady(true);
+      });
+
+      wavesurfer.current.on('seek', (progress) => {
+        if (!isSharedLink && audioRef.current) {
+          const newTime = progress * duration;
+          audioRef.current.currentTime = newTime;
+        }
+      });
+
+      wavesurfer.current.on('click', (progress) => {
+        if (!isSharedLink && audioRef.current) {
+          const newTime = progress * duration;
+          audioRef.current.currentTime = newTime;
+        }
+      });
 
     } catch (error) {
       console.error('WaveformProgressBar: Error creating WaveSurfer:', error);
       setIsReady(false);
     }
-    };
-
-    // Iniciar el primer intento después de un pequeño delay
-    setTimeout(initWaveSurfer, 100);
 
     return () => {
       if (wavesurfer.current) {
@@ -98,7 +96,7 @@ export default function WaveformProgressBar({
         }
       }
     };
-  }, [currentTrack?.url, isSharedLink]);
+  }, [containerReady, currentTrack?.url, isSharedLink]);
 
   // Sincronizar progreso con el audio element
   useEffect(() => {
@@ -108,15 +106,14 @@ export default function WaveformProgressBar({
     }
   }, [timeProgress, duration, isReady]);
 
-  // Estilo personalizado para el contenedor
   const waveformStyle = {
     opacity: isReady ? 1 : 0.5,
     transition: 'opacity 0.3s ease',
     cursor: isSharedLink ? 'default' : 'pointer'
   };
 
-  // Fallback a la barra normal si wavesurfer falla
-  if (!isReady && wavesurfer.current === null) {
+  // Fallback si no está listo
+  if (!isReady && (!containerReady || !currentTrack?.url)) {
     return (
       <div className="w-full flex items-center gap-1.5 player-progressbar">
         <div className="text-sm">{format.time(timeProgress)}</div>
