@@ -9,6 +9,7 @@ export { default as Track } from './components/Track';
 export { default as TrackMobile } from './components/TrackMobile';
 export { default as ProgressBar } from './components/ProgressBar';
 export { default as ProgressBarMobile } from './components/ProgressBarMobile';
+export { default as WaveformProgressBar } from './components/WaveformProgressBar';
 export { default as VolumeControls } from './components/VolumeControls';
 
 // Hooks

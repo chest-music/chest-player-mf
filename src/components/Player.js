@@ -5,6 +5,7 @@ import { useModal } from '../hooks/useModal';
 
 import ProgressBar from './ProgressBar';
 import ProgressBarMobile from './ProgressBarMobile';
+import WaveformProgressBar from './WaveformProgressBar';
 import Controls from './Controls';
 import ControlsMobile from './ControlsMobile';
 import VolumeControls from './VolumeControls';
@@ -24,7 +25,7 @@ const getDependencies = () => {
   throw new Error('ChestPlayer: Dependencies not provided. Make sure to use PlayerProvider.');
 };
 
-export default function Player() {
+export default function Player({ waveform = false }) {
   const deps = getDependencies();
   const { 
     useLazyGetTrackSourceQuery, 
@@ -339,15 +340,28 @@ export default function Player() {
                     playlist,
                   }}
                 />
-                <ProgressBar
-                  {...{
-                    progressBarRef,
-                    audioRef,
-                    timeProgress,
-                    duration,
-                    playlist,
-                  }}
-                />
+                {waveform ? (
+                  <WaveformProgressBar
+                    {...{
+                      timeProgress,
+                      duration,
+                      audioRef,
+                      open,
+                      playlist,
+                      currentTrack: trackList,
+                    }}
+                  />
+                ) : (
+                  <ProgressBar
+                    {...{
+                      progressBarRef,
+                      audioRef,
+                      timeProgress,
+                      duration,
+                      playlist,
+                    }}
+                  />
+                )}
               </div>
               <VolumeControls
                 {...{

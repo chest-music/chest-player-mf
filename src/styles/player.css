@@ -172,3 +172,14 @@
 .test:hover path {
   @apply stroke-brand-gold;
 }
+
+/* Waveform Styles */
+.waveform-container {
+  @apply flex-1 h-6 rounded-lg overflow-hidden;
+  background: rgba(23, 23, 23, 0.8); /* Similar to range background */
+}
+
+.waveform-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
