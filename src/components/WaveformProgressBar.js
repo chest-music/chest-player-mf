@@ -16,15 +16,33 @@ export default function WaveformProgressBar({
   const [containerReady, setContainerReady] = useState(false);
   const isSharedLink = !!playlist[0]?.token;
 
+  // Debug: Ver si el componente se está renderizando
+  console.log('WaveformProgressBar: Component rendering', {
+    hasTrackUrl: !!currentTrack?.url,
+    trackUrl: currentTrack?.url
+  });
+
   // Verificar que el contenedor esté disponible
   useEffect(() => {
+    console.log('WaveformProgressBar: useEffect running, checking for container...');
+    
+    let attempts = 0;
+    const maxAttempts = 20;
+    
     const checkContainer = () => {
+      attempts++;
+      console.log(`WaveformProgressBar: Check attempt ${attempts}/${maxAttempts}`, {
+        refCurrent: waveformRef.current,
+        refExists: !!waveformRef.current
+      });
+      
       if (waveformRef.current) {
         console.log('WaveformProgressBar: Container found!');
         setContainerReady(true);
+      } else if (attempts < maxAttempts) {
+        setTimeout(checkContainer, 100);
       } else {
-        console.log('WaveformProgressBar: Container not found, checking again...');
-        setTimeout(checkContainer, 50);
+        console.error('WaveformProgressBar: Max attempts reached, container never found');
       }
     };
     
@@ -125,11 +143,20 @@ export default function WaveformProgressBar({
     );
   }
 
+  console.log('WaveformProgressBar: About to render main JSX', {
+    isReady,
+    containerReady,
+    hasTrackUrl: !!currentTrack?.url
+  });
+
   return (
     <div className="w-full flex items-center gap-1.5 player-progressbar">
       <div className="text-sm">{format.time(timeProgress)}</div>
       <div 
-        ref={waveformRef} 
+        ref={(el) => {
+          console.log('WaveformProgressBar: Ref callback called', { element: el });
+          waveformRef.current = el;
+        }}
         className="flex-1 h-6 rounded-lg overflow-hidden bg-neutral-black"
         style={waveformStyle}
       />
