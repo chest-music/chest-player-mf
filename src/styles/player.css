@@ -137,6 +137,10 @@
   outline: none !important;
   box-shadow: none !important;
   -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
 }
 
 .player-controls:focus {
@@ -144,6 +148,7 @@
   outline: none !important;
   box-shadow: none !important;
   -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
 }
 
 .player-controls:focus-visible {
@@ -151,6 +156,23 @@
   outline: none !important;
   box-shadow: none !important;
   -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
+}
+
+.player-controls:active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
+}
+
+.player-controls:hover {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
 }
 
 .player-controls path {
@@ -159,6 +181,49 @@
 
 .player-controls:hover path {
   @apply fill-white;
+}
+
+.player-controls-active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+.player-controls-active:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
+}
+
+.player-controls-active:focus-visible {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
+}
+
+.player-controls-active:active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
+}
+
+.player-controls-active:hover {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-focus-ring-color: transparent !important;
+  background: transparent !important;
 }
 
 .player-controls-active path {
