@@ -16,9 +16,9 @@ export default function WaveformProgressBar({
   const isSharedLink = !!playlist[0]?.token;
 
   useEffect(() => {
-    if (!currentTrack?.url) return;
+    if (!currentTrack?.url || !audioRef.current) return;
 
-    // Esperar a que el DOM esté listo
+    // Esperar a que el DOM y el audio estén listos
     const timer = setTimeout(() => {
       if (!waveformRef.current) {
         console.log('WaveformProgressBar: Container still not ready');
@@ -49,7 +49,8 @@ export default function WaveformProgressBar({
           fillParent: true
         });
 
-        wavesurfer.current.load(currentTrack.url);
+        // Use the existing audio element instead of loading separately
+        wavesurfer.current.loadMediaElement(audioRef.current);
 
         wavesurfer.current.on('ready', () => {
           console.log('WaveformProgressBar: Ready!');
@@ -77,7 +78,7 @@ export default function WaveformProgressBar({
         }
       }
     };
-  }, [currentTrack?.url, isSharedLink]);
+  }, [currentTrack?.url, isSharedLink, audioRef.current]);
 
   // Sincronizar progreso
   useEffect(() => {
