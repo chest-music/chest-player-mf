@@ -25,7 +25,7 @@ const getDependencies = () => {
   throw new Error('ChestPlayer: Dependencies not provided. Make sure to use PlayerProvider.');
 };
 
-export default function Player({ waveform = false }) {
+export default function Player({ waveform = true }) {
   const deps = getDependencies();
   const { 
     useLazyGetTrackSourceQuery, 
@@ -442,16 +442,29 @@ export default function Player({ waveform = false }) {
                       />
                     )}
                   </div>
-                  <ProgressBarMobile
-                    {...{
-                      progressBarRef,
-                      audioRef,
-                      timeProgress,
-                      duration,
-                      open,
-                      playlist,
-                    }}
-                  />
+                  {waveform ? (
+                    <WaveformProgressBar
+                      {...{
+                        timeProgress,
+                        duration,
+                        audioRef,
+                        open,
+                        playlist,
+                        currentTrack: trackList,
+                      }}
+                    />
+                  ) : (
+                    <ProgressBarMobile
+                      {...{
+                        progressBarRef,
+                        audioRef,
+                        timeProgress,
+                        duration,
+                        open,
+                        playlist,
+                      }}
+                    />
+                  )}
                 </div>
               </div>
               {open && <div className='absolute top-0 left-0 w-screen h-screen bg-neutral-black'></div>}
