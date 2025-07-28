@@ -46,11 +46,11 @@ export default function WaveformProgressBar({
           barRadius: 2,
           interact: !isSharedLink,
           hideScrollbar: true,
-          fillParent: true
+          fillParent: true,
+          media: audioRef.current // Use the existing audio element
         });
 
-        // Use the existing audio element instead of loading separately
-        wavesurfer.current.loadMediaElement(audioRef.current);
+        // No need to load separately since we're using the media option
 
         wavesurfer.current.on('ready', () => {
           console.log('WaveformProgressBar: Ready!');
