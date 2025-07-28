@@ -18,21 +18,27 @@ export default function WaveformProgressBar({
   useEffect(() => {
     if (!currentTrack?.url || !audioRef.current) return;
 
-    // Esperar a que el DOM y el audio estén listos
-    const timer = setTimeout(() => {
+    // Wait for audio to have metadata loaded
+    const initializeWaveform = () => {
       if (!waveformRef.current) {
-        console.log('WaveformProgressBar: Container still not ready');
+        console.log('WaveformProgressBar: Container not ready');
         return;
       }
 
-      console.log('WaveformProgressBar: Initializing WaveSurfer');
+      if (!audioRef.current || !audioRef.current.src) {
+        console.log('WaveformProgressBar: Audio not ready');
+        return;
+      }
+
+      console.log('WaveformProgressBar: Initializing WaveSurfer with media element');
 
       try {
-        // Limpiar instancia anterior si existe
+        // Clean up previous instance
         if (wavesurfer.current) {
           wavesurfer.current.destroy();
         }
 
+        // ✅ CORRECT - Use existing audio element instead of fetching URL
         wavesurfer.current = WaveSurfer.create({
           container: waveformRef.current,
           waveColor: '#6B7280',
@@ -47,10 +53,8 @@ export default function WaveformProgressBar({
           interact: !isSharedLink,
           hideScrollbar: true,
           fillParent: true,
-          media: audioRef.current // Use the existing audio element
+          media: audioRef.current // Use the existing audio element that already works
         });
-
-        // No need to load separately since we're using the media option
 
         wavesurfer.current.on('ready', () => {
           console.log('WaveformProgressBar: Ready!');
@@ -66,19 +70,35 @@ export default function WaveformProgressBar({
       } catch (error) {
         console.error('WaveformProgressBar: Error:', error);
       }
-    }, 500); // Timeout más largo para asegurar que el DOM esté listo
-
-    return () => {
-      clearTimeout(timer);
-      if (wavesurfer.current) {
-        try {
-          wavesurfer.current.destroy();
-        } catch (error) {
-          console.error('Error destroying WaveSurfer:', error);
-        }
-      }
     };
-  }, [currentTrack?.url, isSharedLink, audioRef.current]);
+
+    // Check if audio already has metadata, if not wait for it
+    if (audioRef.current.readyState >= 1) {
+      // Audio metadata is already loaded
+      const timer = setTimeout(initializeWaveform, 100);
+      return () => clearTimeout(timer);
+    } else {
+      // Wait for audio metadata to load
+      const handleLoadedMetadata = () => {
+        setTimeout(initializeWaveform, 100);
+      };
+
+      audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
+      
+      return () => {
+        if (audioRef.current) {
+          audioRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        }
+        if (wavesurfer.current) {
+          try {
+            wavesurfer.current.destroy();
+          } catch (error) {
+            console.error('Error destroying WaveSurfer:', error);
+          }
+        }
+      };
+    }
+  }, [currentTrack?.url, isSharedLink]);
 
   // Sincronizar progreso
   useEffect(() => {
