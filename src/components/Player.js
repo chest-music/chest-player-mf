@@ -266,9 +266,34 @@ export default function Player() {
   };
 
   useEffect(() => {
+    console.log('PlayerProvider received playlist:', playlist);
+    console.log('PlayerProvider trackList:', trackList);
+    console.log('PlayerProvider starting playback:', playlist[0]?.isPlaying);
+    
     if (trackList && playlist[0]?.isPlaying) {
       if (!handlePlayAttempt()) {
         dispatch(play());
+        return;
+      }
+      
+      // Actually start audio playback
+      if (audioRef.current) {
+        console.log('Audio play() called:', audioRef.current.play());
+        let playPromise = audioRef.current.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('Audio playback started successfully');
+            })
+            .catch(error => {
+              console.log('Audio playback failed:', error);
+              // Handle autoplay policy restrictions on mobile
+              if (error.name === 'NotAllowedError') {
+                console.log('Autoplay blocked - user gesture required');
+              }
+            });
+        }
       }
     }
   }, [trackList, playlist[0]?.isPlaying]);
