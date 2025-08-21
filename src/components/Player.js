@@ -123,8 +123,11 @@ export default function Player() {
   const onLoadedMetadata = () => {
     const seconds = audioRef.current.duration;
     setDuration(seconds);
-    progressBarRef.current.max = seconds;
+    if (progressBarRef.current) {
+      progressBarRef.current.max = seconds;
+    }
   };
+
 
   const checkPlayLimit = () => {
     if (isSharedLink && playLimit !== null && playCount >= playLimit) {
