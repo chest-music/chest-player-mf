@@ -38,6 +38,12 @@
   max-width: calc(100vw - 24px);
   box-sizing: border-box;
   overflow: hidden;
+  transition: transform 0.3s ease-out;
+}
+
+/* Swipe animation styles */
+.audio-player-mobile .swiping {
+  transform: translateX(var(--swipe-distance));
 }
 
 .audio-player-mobile-open {

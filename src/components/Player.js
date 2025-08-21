@@ -50,9 +50,15 @@ export default function Player() {
   const [hasEnded, setHasEnded] = useState(false);
   const [isLimitReached, setIsLimitReached] = useState(false);
   const [hasDecremented, setHasDecremented] = useState(false);
+  
+  // Touch/swipe state
+  const [touchStart, setTouchStart] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [swipeDistance, setSwipeDistance] = useState(0);
 
   const audioRef = useRef();
   const progressBarRef = useRef();
+  const mobilePlayerRef = useRef();
 
   const isSharedLink = !!playlist[0]?.token;
 
@@ -67,6 +73,52 @@ export default function Player() {
   const toggleOpen = () => {
     setOpen((prev) => !prev);
   };
+
+  // Touch handlers for swipe-to-close
+  const handleTouchStart = (e) => {
+    setTouchStart(e.touches[0].clientX);
+    setIsSwiping(false);
+    setSwipeDistance(0);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!touchStart) return;
+    
+    const currentTouch = e.touches[0].clientX;
+    const distance = currentTouch - touchStart;
+    
+    setIsSwiping(true);
+    setSwipeDistance(distance);
+    
+    // Update CSS custom property for animation
+    if (mobilePlayerRef.current) {
+      mobilePlayerRef.current.style.setProperty('--swipe-distance', `${distance}px`);
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!touchStart) return;
+    
+    const touchEnd = e.changedTouches[0].clientX;
+    const swipeDistanceEnd = touchStart - touchEnd;
+
+    // Reset swipe state
+    setIsSwiping(false);
+    setSwipeDistance(0);
+    
+    // Reset CSS custom property
+    if (mobilePlayerRef.current) {
+      mobilePlayerRef.current.style.setProperty('--swipe-distance', '0px');
+    }
+
+    // If swipe > threshold, close player
+    if (Math.abs(swipeDistanceEnd) > 100) {
+      dispatch(closePlayer());
+    }
+    
+    setTouchStart(0);
+  };
+
 
   const onLoadedMetadata = () => {
     const seconds = audioRef.current.duration;
@@ -266,10 +318,6 @@ export default function Player() {
   };
 
   useEffect(() => {
-    console.log('PlayerProvider received playlist:', playlist);
-    console.log('PlayerProvider trackList:', trackList);
-    console.log('PlayerProvider starting playback:', playlist[0]?.isPlaying);
-    
     if (trackList && playlist[0]?.isPlaying) {
       if (!handlePlayAttempt()) {
         dispatch(play());
@@ -278,16 +326,11 @@ export default function Player() {
       
       // Actually start audio playback
       if (audioRef.current) {
-        console.log('Audio play() called:', audioRef.current.play());
         let playPromise = audioRef.current.play();
         
         if (playPromise !== undefined) {
           playPromise
-            .then(() => {
-              console.log('Audio playback started successfully');
-            })
             .catch(error => {
-              console.log('Audio playback failed:', error);
               // Handle autoplay policy restrictions on mobile
               if (error.name === 'NotAllowedError') {
                 console.log('Autoplay blocked - user gesture required');
@@ -383,9 +426,16 @@ export default function Player() {
             </motion.div>
           ) : (
             <>
-              <div className={`${open ? 'audio-player-mobile-open' : 'audio-player-mobile'}`}>
+              <div className={`${open ? 'audio-player-mobile-open relative z-50' : 'audio-player-mobile'}`}>
                 {!open ? (
-                  <div className='flex flex-row min-w-0 w-full' onClick={toggleOpen}>
+                  <div 
+                    ref={mobilePlayerRef}
+                    className={`flex flex-row min-w-0 w-full ${isSwiping ? 'swiping' : ''}`}
+                    onClick={toggleOpen}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                  >
                     <TrackMobile
                       {...{
                         currentTrack: trackList,
@@ -410,58 +460,72 @@ export default function Player() {
                     />
                   </div>
                 ) : (
-                  <div className='bg-neutral-silver-700 rounded-3xl mb-3 gap-5 flex flex-col'>
-                    <div className='px-2 pt-2 flex flex-row justify-between'>
-                      <button type='button' className='p-2.5' onClick={toggleOpen}>
-                        <ChevronDownIcon className='h-6 w-6 text-white' />
-                      </button>
-                      {/* <button type='button' className='p-2.5' >
-                        <EllipsisHorizontalIcon className='h-6 w-6 text-white' onClick={()=>console.log(trackList)} />
-                      </button> */}
+                  <div className='fixed inset-0 z-50 flex items-center justify-center'>
+                    {/* Overlay */}
+                    <div className='absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-60'></div>
+                    
+                    {/* Player container */}
+                    <div className='relative z-50 bg-black bg-opacity-60 backdrop-blur-md rounded-2xl m-4 flex flex-col w-full max-w-sm'>
+                      {/* Main content container */}
+                      <div className='flex flex-col items-center justify-center px-6 py-8'>
+                        {/* Title */}
+                        <div className='text-center mb-4'>
+                          <span className='font-thunder-bold text-white text-center block' style={{fontSize: '32px', lineHeight: '1.1'}}>
+                            {trackList.name}
+                          </span>
+                        </div>
+                        
+                        {/* Artist */}
+                        <div className='text-center mb-8'>
+                          <span className='text-neutral-silver-200' style={{fontSize: '16px'}}>
+                            {trackList?.authors?.join(', ')}
+                          </span>
+                        </div>
+                        
+                        {/* Cover */}
+                        <div className='mb-8 w-full px-4'>
+                          <div
+                            className='w-full aspect-square bg-cover shadow-2xl max-w-sm mx-auto'
+                            style={{ 
+                              backgroundImage: `url(${trackList.cover_url})`,
+                              borderRadius: '11px'
+                            }}>
+                          </div>
+                        </div>
+                        
+                        {/* Progress Bar Container */}
+                        <div className='w-full px-4 mb-4'>
+                          <ProgressBarMobile
+                            {...{
+                              progressBarRef,
+                              audioRef,
+                              timeProgress,
+                              duration,
+                              open,
+                              playlist,
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Controls with mobile expanded layout */}
+                        <Controls
+                          {...{
+                            audioRef,
+                            progressBarRef,
+                            duration,
+                            setTimeProgress,
+                            setLoop,
+                            loop,
+                            dispatch,
+                            playlist,
+                            mobileExpanded: true
+                          }}
+                        />
+                      </div>
                     </div>
-                    <TrackMobile
-                      {...{
-                        currentTrack: trackList,
-                        audioRef,
-                        setDuration,
-                        progressBarRef,
-                        open,
-                        dispatch,
-                        playlist,
-                      }}
-                    />
                   </div>
                 )}
-                <div className={`${open && 'bg-neutral-silver-600 px-5 pb-5 pt-4 rounded-3xl flex flex-col gap-1.5'}`}>
-                  <div className={`${open && 'flex items-center justify-center gap-1.5'}`}>
-                    {open && (
-                      <Controls
-                        {...{
-                          audioRef,
-                          progressBarRef,
-                          duration,
-                          setTimeProgress,
-                          setLoop,
-                          loop,
-                          dispatch,
-                          playlist,
-                        }}
-                      />
-                    )}
-                  </div>
-                  <ProgressBarMobile
-                    {...{
-                      progressBarRef,
-                      audioRef,
-                      timeProgress,
-                      duration,
-                      open,
-                      playlist,
-                    }}
-                  />
-                </div>
               </div>
-              {open && <div className='absolute top-0 left-0 w-screen h-screen bg-neutral-black'></div>}
             </>
           )}
         </>

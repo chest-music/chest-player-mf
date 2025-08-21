@@ -30,7 +30,8 @@ export default function Controls({
   setLoop,
   loop,
   dispatch,
-  playlist
+  playlist,
+  mobileExpanded = false
 }) {
   const playAnimationRef = useRef();
   const { play, next, previous, playing } = getPlaylistActions();
@@ -155,6 +156,43 @@ export default function Controls({
     playAnimationRef.current = requestAnimationFrame(repeat);
 
   }, [loop, audioRef, repeat, playlist]);
+
+  if (mobileExpanded) {
+    return (
+      <div className='w-full px-4 flex items-center justify-between'>
+        {/* Shuffle (Left) */}
+        <button type='button' className='opacity-30' disabled>
+          <ShuffleIcon width={20} height={20} />
+        </button>
+        
+        {/* Center controls (Previous, Play/Pause, Next) */}
+        <div className='flex items-center gap-6'>
+          <button type='button' onClick={skipBackward} className='text-neutral-silver-200 hover:text-white'>
+            <PreviousIcon width={24} height={24} />
+          </button>
+          
+          <button type='button' onClick={togglePlayPause} className='text-white hover:scale-105 transition-transform'>
+            {playlist[0]?.isPlaying ?
+              <PauseIcon width={34} height={34} /> :
+              <PlayIcon width={34} height={34} />
+            }
+          </button>
+          
+          <button type='button' onClick={skipForward} className='text-neutral-silver-200 hover:text-white'>
+            <NextIcon width={24} height={24} />
+          </button>
+        </div>
+        
+        {/* Repeat (Right) */}
+        <button
+          type='button'
+          className={`${loop ? 'text-white' : 'text-neutral-silver-200 hover:text-white'}`}
+          onClick={toggleLoop}>
+          <RepeatIcon width={20} height={20} />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
