@@ -205,7 +205,7 @@ export default function Player() {
     return false;
   };
 
-  useEffect(() => {E
+  useEffect(() => {
     if (open) {
       dispatch(openPlayer());
     } else {
