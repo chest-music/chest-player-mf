@@ -51,38 +51,14 @@ export default function ControlsMobile({
   
       playAnimationRef.current = requestAnimationFrame(repeat);
     } catch (error) {
-      console.error('Error in repeat:', error);
+      // Error in repeat - silently handle
       cancelAnimationFrame(playAnimationRef.current);
     }
   }, [audioRef, progressBarRef, setTimeProgress]);
 
   const togglePlayPause = (e) => {
     e.stopPropagation();
-    console.log('Mobile togglePlayPause called');
     play();
-    
-    // Ensure audio playback starts immediately on mobile
-    if (audioRef.current && !playlist[0]?.isPlaying) {
-      setTimeout(() => {
-        if (audioRef.current) {
-          console.log('Mobile manual audio.play() trigger');
-          let playPromise = audioRef.current.play();
-          
-          if (playPromise !== undefined) {
-            playPromise
-              .then(() => {
-                console.log('Mobile audio playback started successfully');
-              })
-              .catch(error => {
-                console.log('Mobile audio playback failed:', error);
-                if (error.name === 'NotAllowedError') {
-                  console.log('Mobile autoplay blocked - user gesture required');
-                }
-              });
-          }
-        }
-      }, 100);
-    }
   }
 
   const toggleLoop = () => {
@@ -111,22 +87,13 @@ export default function ControlsMobile({
 
   // Handle playlist play state changes for mobile autoplay
   useEffect(() => {
-    console.log('Mobile useEffect - playlist[0]?.isPlaying:', playlist[0]?.isPlaying);
-    
     if (playlist[0]?.isPlaying && audioRef.current) {
-      console.log('Mobile automatic audio.play() trigger');
       let playPromise = audioRef.current.play();
 
       if (playPromise !== undefined) {
         playPromise
-          .then(() => {
-            console.log('Mobile automatic audio playback started successfully');
-          })
-          .catch(error => {
-            console.log('Mobile automatic audio playback failed:', error);
-            if (error.name === 'NotAllowedError') {
-              console.log('Mobile automatic autoplay blocked - user gesture required');
-            }
+          .catch(() => {
+            // Mobile autoplay blocked - user gesture required
             audioRef.current.pause();
           });
       }

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Player Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for player */
+        .font-thunder-bold {
+            font-weight: 800;
+            font-family: 'Arial Black', sans-serif;
+        }
+        
+        .text-neutral-silver-200 {
+            color: #c4c9cf;
+        }
+        
+        /* Progress bar styles */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-webkit-slider-track {
+            background: #000;
+            height: 6px;
+            border-radius: 3px;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #fff;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-moz-range-track {
+            background: #000;
+            height: 6px;
+            border-radius: 3px;
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            background: #fff;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-800">
+    <!-- Dashboard background simulation -->
+    <div class="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 p-4">
+        <h1 class="text-white text-2xl mb-4">CHEST BACKGROUND</h1>
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="bg-white bg-opacity-20 p-4 rounded-lg">
+                <h3 class="text-white">Card 1</h3>
+                <p class="text-gray-200">Some content here</p>
+            </div>
+            <div class="bg-white bg-opacity-20 p-4 rounded-lg">
+                <h3 class="text-white">Card 2</h3>
+                <p class="text-gray-200">Some content here</p>
+            </div>
+        </div>
+        
+        <!-- Mobile Player Preview -->
+        <div class="fixed bottom-4 left-4 right-4">
+            <!-- Minimized player -->
+            <div id="minimizedPlayer" class="bg-gray-800 rounded-lg p-4 mb-4 cursor-pointer" onclick="openPlayer()">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-cover rounded" style="background-image: url('https://cdn.chestmusic.com/cover-default.jpg')"></div>
+                        <div>
+                            <div class="text-white text-sm">AUD 20211124 WA0000</div>
+                            <div class="text-neutral-silver-200 text-xs">Artist Name, Another Artist</div>
+                        </div>
+                    </div>
+                    <button class="text-white p-2">
+                        <svg width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.333 31.394V8.606a1.667 1.667 0 012.449-1.472L32.23 18.528c1.18.627 1.18 2.317 0 2.944L10.782 32.866a1.667 1.667 0 01-2.449-1.472z" fill="#fff"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Player Expanded (hidden by default) -->
+        <div id="expandedPlayer" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+            <!-- Overlay transparente al 50% -->
+            <div class="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-60"></div>
+            
+            <!-- Player container -->
+            <div class="relative z-50 bg-black bg-opacity-60 backdrop-blur-md rounded-2xl m-4 flex flex-col w-full max-w-sm">
+                
+                <!-- Main content container -->
+                <div class="flex flex-col items-center justify-center px-2 py-8">
+                    <!-- Title -->
+                    <div class="text-center mb-4">
+                        <span class="font-thunder-bold text-white text-center block" style="font-size: 32px; line-height: 1.1;">
+                     MUJICA SONG
+                        </span>
+                    </div>
+                    
+                    <!-- Artist -->
+                    <div class="text-center mb-8">
+                        <span class="text-neutral-silver-200" style="font-size: 16px;">
+                            Iam Pepe pig
+                        </span>
+
+                    </div>
+                    
+                    <!-- Cover -->
+                    <div class="mb-8 w-full px-4">
+                        <div class="w-full aspect-square bg-cover shadow-2xl max-w-sm mx-auto" 
+                             style="background-image: url('https://cdn.chestmusic.com/cover-default.jpg'); border-radius: 11px;">
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar Container -->
+                    <div class="w-full px-4 mb-4 relative">
+                        <!-- Progress Bar -->
+                        <input type="range" 
+                               value="30" 
+                               min="0" 
+                               max="100" 
+                               class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none mb-2">
+                        
+                        <!-- Time Labels -->
+                        <div class="flex justify-between w-full">
+                            <div class="text-sm text-white">1:23</div>
+                            <div class="text-sm text-neutral-silver-200">3:45</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Controls with Shuffle and Repeat -->
+                    <div class="flex items-center justify-center">
+                        <div class="flex items-center gap-6">
+                            <!-- Shuffle -->
+                            <button type="button" class="opacity-30" disabled>
+                                <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18.79 13.71a.937.937 0 010 1.329l-1.876 1.875a.945.945 0 01-1.532-.305.938.938 0 01.204-1.023l.273-.274h-2.414a1.571 1.571 0 01-1.273-.656L6.39 6.562H2.5a.938.938 0 110-1.875h4.055a1.57 1.57 0 011.273.656l5.781 8.094h2.25l-.273-.273a.94.94 0 011.328-1.328l1.875 1.875z" fill="#C4C9CF"/>
+                                </svg>
+                            </button>
+                            
+                            <!-- Previous -->
+                            <button type="button" class="text-neutral-silver-200 hover:text-white">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17.893 18.224l-7.693-5.18a1.24 1.24 0 010-2.075l7.693-5.193C18.787 5.191 20 5.79 20 6.82v10.36c0 1.03-1.213 1.63-2.107 1.044zM6.667 6.273v11.454c0 .7-.6 1.273-1.334 1.273C4.6 19 4 18.427 4 17.727V6.273C4 5.573 4.6 5 5.333 5c.734 0 1.334.573 1.334 1.273z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                            
+                            <!-- Play/Pause -->
+                            <button type="button" class="text-white hover:scale-105 transition-transform">
+                                <svg width="34" height="34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.5 8.5c0-.782.635-1.417 1.417-1.417h2.833c.782 0 1.417.635 1.417 1.417v17c0 .782-.635 1.417-1.417 1.417H9.917c-.782 0-1.417-.635-1.417-1.417v-17zm11.333 0c0-.782.635-1.417 1.417-1.417h2.833c.782 0 1.417.635 1.417 1.417v17c0 .782-.635 1.417-1.417 1.417H21.25c-.782 0-1.417-.635-1.417-1.417v-17z" fill="#fff"/>
+                                </svg>
+                            </button>
+                            
+                            <!-- Next -->
+                            <button type="button" class="text-neutral-silver-200 hover:text-white">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6.107 18.224l7.693-5.18a1.24 1.24 0 000-2.075L6.107 5.776C5.213 5.191 4 5.79 4 6.82v10.36c0 1.03 1.213 1.63 2.107 1.044zM17.333 6.273v11.454c0 .7.6 1.273 1.334 1.273C19.4 19 20 18.427 20 17.727V6.273C20 5.573 19.4 5 18.667 5c-.734 0-1.334.573-1.334 1.273z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                            
+                            <!-- Repeat -->
+                            <button type="button" class="text-neutral-silver-200 hover:text-white">
+                                <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.668 10.001a5.776 5.776 0 011.634-4.028 5.513 5.513 0 013.936-1.672h7.255l-.257-.262a.902.902 0 01-.258-.637.92.92 0 01.258-.638.88.88 0 01.623-.264.863.863 0 01.623.264l1.759 1.8a.901.901 0 01.258.637.918.918 0 01-.258.638l-1.76 1.8a.876.876 0 01-1.245 0A.901.901 0 0113.977 7a.918.918 0 01.26-.637l.256-.263H7.238c-1.011 0-1.98.411-2.695 1.143A3.947 3.947 0 003.427 10a.91.91 0 01-.258.637.87.87 0 01-1.243 0A.91.91 0 011.668 10zm14.95-.9a.87.87 0 00-.622.264.91.91 0 00-.258.636 3.98 3.98 0 01-.29 1.493 3.907 3.907 0 01-.826 1.265c-.354.362-.774.65-1.236.845a3.735 3.735 0 01-1.458.297H4.673l.256-.262a.912.912 0 000-1.275.87.87 0 00-1.246 0l-1.758 1.8a.902.902 0 00-.259.637.918.918 0 00.259.637l1.758 1.8a.877.877 0 001.246 0 .901.901 0 00.259-.637.918.918 0 00-.259-.638l-.256-.262h7.255a5.513 5.513 0 003.936-1.672 5.776 5.776 0 001.633-4.028.91.91 0 00-.257-.636.87.87 0 00-.622-.264z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let startY = 0;
+        let currentY = 0;
+        let isDragging = false;
+        
+        function openPlayer() {
+            document.getElementById('minimizedPlayer').style.display = 'none';
+            document.getElementById('expandedPlayer').classList.remove('hidden');
+        }
+        
+        function closePlayer() {
+            document.getElementById('expandedPlayer').classList.add('hidden');
+            document.getElementById('minimizedPlayer').style.display = 'block';
+        }
+        
+        // Touch events for swipe to close
+        document.addEventListener('DOMContentLoaded', function() {
+            const expandedPlayer = document.getElementById('expandedPlayer');
+            const playerContainer = expandedPlayer.querySelector('.relative.z-50');
+            
+            // Touch start
+            expandedPlayer.addEventListener('touchstart', function(e) {
+                startY = e.touches[0].clientY;
+                isDragging = true;
+                playerContainer.style.transition = 'none';
+            });
+            
+            // Touch move
+            expandedPlayer.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+                
+                currentY = e.touches[0].clientY;
+                const deltaY = currentY - startY;
+                
+                // Only allow downward swipe
+                if (deltaY > 0) {
+                    playerContainer.style.transform = `translateY(${deltaY}px)`;
+                    playerContainer.style.opacity = Math.max(0.3, 1 - (deltaY / 300));
+                }
+            });
+            
+            // Touch end
+            expandedPlayer.addEventListener('touchend', function(e) {
+                if (!isDragging) return;
+                
+                const deltaY = currentY - startY;
+                
+                // If swiped down more than 150px, close the player
+                if (deltaY > 150) {
+                    playerContainer.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+                    playerContainer.style.transform = 'translateY(100vh)';
+                    playerContainer.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        closePlayer();
+                        playerContainer.style.transform = 'translateY(0)';
+                        playerContainer.style.opacity = '1';
+                        playerContainer.style.transition = '';
+                    }, 300);
+                } else {
+                    // Snap back to original position
+                    playerContainer.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+                    playerContainer.style.transform = 'translateY(0)';
+                    playerContainer.style.opacity = '1';
+                    
+                    setTimeout(() => {
+                        playerContainer.style.transition = '';
+                    }, 300);
+                }
+                
+                isDragging = false;
+            });
+        });
+    </script>
+</body>
+</html>

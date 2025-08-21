@@ -265,7 +265,7 @@ export default function Player() {
           }
         }
       } catch (error) {
-        console.error('Error updating play count:', error);
+        // Error updating play count - silently handle
       }
     }
   };
@@ -332,9 +332,7 @@ export default function Player() {
           playPromise
             .catch(error => {
               // Handle autoplay policy restrictions on mobile
-              if (error.name === 'NotAllowedError') {
-                console.log('Autoplay blocked - user gesture required');
-              }
+              // Autoplay blocked - user gesture required
             });
         }
       }

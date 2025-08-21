@@ -138,8 +138,7 @@ export default function Controls({
 
       if (playPromise !== undefined) {
         playPromise
-          .catch(error => {
-            console.log(error);
+          .catch(() => {
             audioRef.current.pause();
           })
       }
