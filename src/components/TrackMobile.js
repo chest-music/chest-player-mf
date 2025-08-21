@@ -47,7 +47,7 @@ export default function TrackMobile({
           <div className='flex gap-3 items-center min-w-0 flex-1'>
             <div
               className='w-10 h-10 bg-cover rounded min-w-[40px] flex-shrink-0'
-              style={{ backgroundImage: `url(${currentTrack.cover_url})` }}>
+              style={{ backgroundImage: `url(${currentTrack.cover_url || 'https://cdn.chestmusic.com/cover-default.jpg'})` }}>
             </div>
             <div className='flex flex-col min-w-0 flex-1'>
               <div className='w-full truncate'>

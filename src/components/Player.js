@@ -74,14 +74,14 @@ export default function Player() {
     setOpen((prev) => !prev);
   };
 
-  // Touch handlers for swipe-to-close
-  const handleTouchStart = (e) => {
+  // Touch handlers for mini player swipe-to-close (horizontal)
+  const handleMiniTouchStart = (e) => {
     setTouchStart(e.touches[0].clientX);
     setIsSwiping(false);
     setSwipeDistance(0);
   };
 
-  const handleTouchMove = (e) => {
+  const handleMiniTouchMove = (e) => {
     if (!touchStart) return;
     
     const currentTouch = e.touches[0].clientX;
@@ -96,11 +96,11 @@ export default function Player() {
     }
   };
 
-  const handleTouchEnd = (e) => {
+  const handleMiniTouchEnd = (e) => {
     if (!touchStart) return;
     
     const touchEnd = e.changedTouches[0].clientX;
-    const swipeDistanceEnd = touchStart - touchEnd;
+    const swipeDistanceEnd = Math.abs(touchStart - touchEnd);
 
     // Reset swipe state
     setIsSwiping(false);
@@ -111,12 +111,77 @@ export default function Player() {
       mobilePlayerRef.current.style.setProperty('--swipe-distance', '0px');
     }
 
-    // If swipe > threshold, close player
-    if (Math.abs(swipeDistanceEnd) > 100) {
+    // If swipe > threshold, close player completely
+    if (swipeDistanceEnd > 100) {
       dispatch(closePlayer());
     }
     
     setTouchStart(0);
+  };
+
+  // Touch handlers for expanded player swipe-to-close (vertical up)
+  const [expandedTouchStart, setExpandedTouchStart] = useState(0);
+  const [expandedIsSwiping, setExpandedIsSwiping] = useState(false);
+  const expandedPlayerRef = useRef();
+
+  const handleExpandedTouchStart = (e) => {
+    setExpandedTouchStart(e.touches[0].clientY);
+    setExpandedIsSwiping(true);
+    if (expandedPlayerRef.current) {
+      expandedPlayerRef.current.style.transition = 'none';
+    }
+  };
+
+  const handleExpandedTouchMove = (e) => {
+    if (!expandedTouchStart || !expandedIsSwiping) return;
+    
+    const currentY = e.touches[0].clientY;
+    const deltaY = expandedTouchStart - currentY; // Invertido para swipe hacia arriba
+    
+    // Solo permitir swipe hacia arriba (deltaY positivo)
+    if (deltaY > 0 && expandedPlayerRef.current) {
+      expandedPlayerRef.current.style.transform = `translateY(-${deltaY}px)`;
+      expandedPlayerRef.current.style.opacity = Math.max(0.3, 1 - (deltaY / 300));
+    }
+  };
+
+  const handleExpandedTouchEnd = (e) => {
+    if (!expandedTouchStart || !expandedIsSwiping) return;
+    
+    const touchEnd = e.changedTouches[0].clientY;
+    const deltaY = expandedTouchStart - touchEnd; // Swipe hacia arriba
+    
+    if (expandedPlayerRef.current) {
+      expandedPlayerRef.current.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+      
+      // Si swipe hacia arriba > 150px, cerrar el reproductor
+      if (deltaY > 150) {
+        expandedPlayerRef.current.style.transform = 'translateY(-100vh)';
+        expandedPlayerRef.current.style.opacity = '0';
+        
+        setTimeout(() => {
+          setOpen(false);
+          if (expandedPlayerRef.current) {
+            expandedPlayerRef.current.style.transform = 'translateY(0)';
+            expandedPlayerRef.current.style.opacity = '1';
+            expandedPlayerRef.current.style.transition = '';
+          }
+        }, 300);
+      } else {
+        // Volver a la posición original
+        expandedPlayerRef.current.style.transform = 'translateY(0)';
+        expandedPlayerRef.current.style.opacity = '1';
+        
+        setTimeout(() => {
+          if (expandedPlayerRef.current) {
+            expandedPlayerRef.current.style.transition = '';
+          }
+        }, 300);
+      }
+    }
+    
+    setExpandedTouchStart(0);
+    setExpandedIsSwiping(false);
   };
 
 
@@ -140,7 +205,7 @@ export default function Player() {
     return false;
   };
 
-  useEffect(() => {
+  useEffect(() => {E
     if (open) {
       dispatch(openPlayer());
     } else {
@@ -168,7 +233,7 @@ export default function Player() {
       if (currentTrack.audio) {
         setTrackList({
           url: currentTrack.audio,
-          cover_url: currentTrack.cover,
+          cover_url: currentTrack.cover || 'https://cdn.chestmusic.com/cover-default.jpg',
           name: currentTrack.name,
           authors: currentTrack.authors,
           type: currentTrack.type,
@@ -182,7 +247,7 @@ export default function Player() {
           if (data) {
             setTrackList({
               url: data.url,
-              cover_url: currentTrack.cover,
+              cover_url: currentTrack.cover || 'https://cdn.chestmusic.com/cover-default.jpg',
               name: currentTrack.name,
               authors: currentTrack.authors,
               type: currentTrack.type,
@@ -433,9 +498,9 @@ export default function Player() {
                     ref={mobilePlayerRef}
                     className={`flex flex-row min-w-0 w-full ${isSwiping ? 'swiping' : ''}`}
                     onClick={toggleOpen}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
+                    onTouchStart={handleMiniTouchStart}
+                    onTouchMove={handleMiniTouchMove}
+                    onTouchEnd={handleMiniTouchEnd}
                   >
                     <TrackMobile
                       {...{
@@ -461,14 +526,15 @@ export default function Player() {
                     />
                   </div>
                 ) : (
-                  <div className='fixed inset-0 z-50 flex items-center justify-center'>
-                    {/* Overlay */}
-                    <div className='absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-60'></div>
-                    
-                    {/* Player container */}
-                    <div className='relative z-50 bg-black bg-opacity-60 backdrop-blur-md rounded-2xl m-4 flex flex-col w-full max-w-sm'>
-                      {/* Main content container */}
-                      <div className='flex flex-col items-center justify-center px-6 py-8'>
+                  <div 
+                    ref={expandedPlayerRef}
+                    className='bg-black bg-opacity-60 backdrop-blur-md rounded-2xl flex flex-col w-full'
+                    onTouchStart={handleExpandedTouchStart}
+                    onTouchMove={handleExpandedTouchMove}
+                    onTouchEnd={handleExpandedTouchEnd}
+                  >
+                    {/* Main content container */}
+                    <div className='flex flex-col items-center justify-center px-6 py-8'>
                         {/* Title */}
                         <div className='text-center mb-4'>
                           <span className='font-thunder-bold text-white text-center block' style={{fontSize: '32px', lineHeight: '1.1'}}>
@@ -488,7 +554,7 @@ export default function Player() {
                           <div
                             className='w-full aspect-square bg-cover shadow-2xl max-w-sm mx-auto'
                             style={{ 
-                              backgroundImage: `url(${trackList.cover_url})`,
+                              backgroundImage: `url(${trackList.cover_url || 'https://cdn.chestmusic.com/cover-default.jpg'})`,
                               borderRadius: '11px'
                             }}>
                           </div>
@@ -523,7 +589,6 @@ export default function Player() {
                           }}
                         />
                       </div>
-                    </div>
                   </div>
                 )}
               </div>
