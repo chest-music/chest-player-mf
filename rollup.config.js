@@ -52,7 +52,10 @@ export default {
       exclude: 'node_modules/**',
       presets: [
         ['@babel/preset-env', { modules: false }],
-        ['@babel/preset-react', { runtime: 'classic' }],
+        ['@babel/preset-react', {
+          runtime: 'automatic',
+          importSource: 'react'
+        }],
       ],
       extensions: ['.js', '.jsx', '.svg'],
     }),
