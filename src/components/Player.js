@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import * as React from 'react';
+const { useEffect, useRef, useState, useCallback } = React;
 import { motion } from 'framer-motion';
 import useMediaQuery from '../hooks/useMediaQuery';
 import { useModal } from '../hooks/useModal';

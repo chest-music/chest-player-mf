@@ -1,4 +1,5 @@
-import React, { useEffect, useCallback } from 'react';
+import * as React from 'react';
+const { useEffect, useCallback } = React;
 import { playing as playingAction } from '../app/playlist';
 
 export default function Track({

@@ -1,6 +1,7 @@
 /* shuffle button disabled */
 
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import * as React from 'react';
+const { useRef, useState, useCallback, useEffect } = React;
 
 import RepeatIcon from '../assets/images/icon-repeat.svg';
 import NextIcon from '../assets/images/icon-next.svg';

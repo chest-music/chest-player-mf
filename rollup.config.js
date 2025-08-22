@@ -14,11 +14,19 @@ export default {
       file: 'dist/index.js',
       format: 'cjs',
       sourcemap: true,
+      globals: {
+        'react': 'React',
+        'react-dom': 'ReactDOM'
+      }
     },
     {
       file: 'dist/index.esm.js',
       format: 'esm',
       sourcemap: true,
+      globals: {
+        'react': 'React',
+        'react-dom': 'ReactDOM'
+      }
     },
   ],
   plugins: [

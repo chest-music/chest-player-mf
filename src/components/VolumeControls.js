@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import * as React from 'react';
+const { useEffect, useRef, useState } = React;
 import { 
   SpeakerWaveIcon, 
   SpeakerXMarkIcon, 

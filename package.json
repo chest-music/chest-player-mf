@@ -13,7 +13,6 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "prepare": "npm run build",
     "dev": "rollup -c -w",
     "test": "echo \"No tests specified\" && exit 0",
     "lint": "eslint src --ext .js,.jsx",
@@ -23,8 +22,8 @@
     "@heroicons/react": "^2.0.0",
     "@reduxjs/toolkit": "^1.9.0",
     "framer-motion": "^10.0.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
     "react-redux": "^8.0.0"
   },
   "devDependencies": {

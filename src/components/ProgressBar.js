@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { format } from '../utils/helpers';
 
 export default function ProgressBar({ timeProgress, duration, progressBarRef, audioRef, open, playlist }) {
