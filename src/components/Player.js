@@ -137,11 +137,11 @@ export default function Player() {
     if (!expandedTouchStart || !expandedIsSwiping) return;
     
     const currentY = e.touches[0].clientY;
-    const deltaY = expandedTouchStart - currentY; // Invertido para swipe hacia arriba
+    const deltaY = currentY - expandedTouchStart; // Downward swipe
     
-    // Solo permitir swipe hacia arriba (deltaY positivo)
+    // Only allow downward swipe (deltaY positive)
     if (deltaY > 0 && expandedPlayerRef.current) {
-      expandedPlayerRef.current.style.transform = `translateY(-${deltaY}px)`;
+      expandedPlayerRef.current.style.transform = `translateY(${deltaY}px)`;
       expandedPlayerRef.current.style.opacity = Math.max(0.3, 1 - (deltaY / 300));
     }
   };
@@ -150,14 +150,14 @@ export default function Player() {
     if (!expandedTouchStart || !expandedIsSwiping) return;
     
     const touchEnd = e.changedTouches[0].clientY;
-    const deltaY = expandedTouchStart - touchEnd; // Swipe hacia arriba
+    const deltaY = touchEnd - expandedTouchStart; // Downward swipe
     
     if (expandedPlayerRef.current) {
       expandedPlayerRef.current.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
       
-      // Si swipe hacia arriba > 150px, cerrar el reproductor
+      // If swiped down more than 150px, close the player
       if (deltaY > 150) {
-        expandedPlayerRef.current.style.transform = 'translateY(-100vh)';
+        expandedPlayerRef.current.style.transform = 'translateY(100vh)';
         expandedPlayerRef.current.style.opacity = '0';
         
         setTimeout(() => {
@@ -169,7 +169,7 @@ export default function Player() {
           }
         }, 300);
       } else {
-        // Volver a la posición original
+        // Snap back to original position
         expandedPlayerRef.current.style.transform = 'translateY(0)';
         expandedPlayerRef.current.style.opacity = '1';
         
@@ -493,7 +493,7 @@ export default function Player() {
             </motion.div>
           ) : (
             <>
-              <div className={`${open ? 'audio-player-mobile-open relative z-50' : 'audio-player-mobile'}`}>
+              <div className={`${open ? 'audio-player-mobile-open' : 'audio-player-mobile'}`}>
                 {!open ? (
                   <div 
                     ref={mobilePlayerRef}
@@ -527,69 +527,75 @@ export default function Player() {
                     />
                   </div>
                 ) : (
-                  <div 
-                    ref={expandedPlayerRef}
-                    className='bg-black bg-opacity-60 backdrop-blur-md rounded-2xl flex flex-col w-full'
-                    onTouchStart={handleExpandedTouchStart}
-                    onTouchMove={handleExpandedTouchMove}
-                    onTouchEnd={handleExpandedTouchEnd}
-                  >
-                    {/* Main content container */}
-                    <div className='flex flex-col items-center justify-center px-6 py-8'>
-                        {/* Title */}
-                        <div className='text-center mb-4'>
-                          <span className='font-thunder-bold text-white text-center block' style={{fontSize: '32px', lineHeight: '1.1'}}>
-                            {trackList.name}
-                          </span>
-                        </div>
-                        
-                        {/* Artist */}
-                        <div className='text-center mb-8'>
-                          <span className='text-neutral-silver-200' style={{fontSize: '16px'}}>
-                            {trackList?.authors?.join(', ')}
-                          </span>
-                        </div>
-                        
-                        {/* Cover */}
-                        <div className='mb-8 w-full px-4'>
-                          <div
-                            className='w-full aspect-square bg-cover shadow-2xl max-w-sm mx-auto'
-                            style={{ 
-                              backgroundImage: `url(${trackList.cover_url || 'https://cdn.chestmusic.com/cover-default.jpg'})`,
-                              borderRadius: '11px'
-                            }}>
+                  <div className='fixed inset-0 z-50 flex items-center justify-center'>
+                    {/* Transparent overlay at 50% */}
+                    <div className='absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-60'></div>
+                    
+                    {/* Player container */}
+                    <div 
+                      ref={expandedPlayerRef}
+                      className='relative z-50 bg-black bg-opacity-60 backdrop-blur-md rounded-2xl m-4 flex flex-col w-full max-w-sm'
+                      onTouchStart={handleExpandedTouchStart}
+                      onTouchMove={handleExpandedTouchMove}
+                      onTouchEnd={handleExpandedTouchEnd}
+                    >
+                      {/* Main content container */}
+                      <div className='flex flex-col items-center justify-center px-2 py-8'>
+                          {/* Title */}
+                          <div className='text-center mb-4'>
+                            <span className='font-thunder-bold text-white text-center block' style={{fontSize: '32px', lineHeight: '1.1'}}>
+                              {trackList.name}
+                            </span>
                           </div>
-                        </div>
-                        
-                        {/* Progress Bar Container */}
-                        <div className='w-full px-4 mb-4'>
-                          <ProgressBarMobile
+                          
+                          {/* Artist */}
+                          <div className='text-center mb-8'>
+                            <span className='text-neutral-silver-200' style={{fontSize: '16px'}}>
+                              {trackList?.authors?.join(', ')}
+                            </span>
+                          </div>
+                          
+                          {/* Cover */}
+                          <div className='mb-8 w-full px-4'>
+                            <div
+                              className='w-full aspect-square bg-cover shadow-2xl max-w-sm mx-auto'
+                              style={{ 
+                                backgroundImage: `url(${trackList.cover_url || 'https://cdn.chestmusic.com/cover-default.jpg'})`,
+                                borderRadius: '11px'
+                              }}>
+                            </div>
+                          </div>
+                          
+                          {/* Progress Bar Container */}
+                          <div className='w-full px-4 mb-4'>
+                            <ProgressBarMobile
+                              {...{
+                                progressBarRef,
+                                audioRef,
+                                timeProgress,
+                                duration,
+                                open,
+                                playlist,
+                              }}
+                            />
+                          </div>
+                          
+                          {/* Controls with mobile expanded layout */}
+                          <Controls
                             {...{
-                              progressBarRef,
                               audioRef,
-                              timeProgress,
+                              progressBarRef,
                               duration,
-                              open,
+                              setTimeProgress,
+                              setLoop,
+                              loop,
+                              dispatch,
                               playlist,
+                              mobileExpanded: true
                             }}
                           />
                         </div>
-                        
-                        {/* Controls with mobile expanded layout */}
-                        <Controls
-                          {...{
-                            audioRef,
-                            progressBarRef,
-                            duration,
-                            setTimeProgress,
-                            setLoop,
-                            loop,
-                            dispatch,
-                            playlist,
-                            mobileExpanded: true
-                          }}
-                        />
-                      </div>
+                    </div>
                   </div>
                 )}
               </div>

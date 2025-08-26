@@ -47,10 +47,7 @@
 }
 
 .audio-player-mobile-open {
-  @apply fixed bottom-4 right-0 left-0 mx-3 z-20;
-  max-width: calc(100vw - 24px);
-  box-sizing: border-box;
-  overflow: hidden;
+  /* Expanded player now uses fixed inset-0 structure in JS */
 }
 
 .player-progressbar input[type="range"] {
