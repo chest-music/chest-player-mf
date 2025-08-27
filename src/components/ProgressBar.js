@@ -6,6 +6,7 @@ export default function ProgressBar({ timeProgress, duration, progressBarRef, au
 
   const handleProgressChange = () => {
     if (isSharedLink) return; // No permitir cambios si es un link compartido
+    if (!audioRef.current || !progressBarRef.current) return;
     audioRef.current.currentTime = progressBarRef.current.value;
   }
 

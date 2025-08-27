@@ -537,23 +537,23 @@ export default function Player() {
                     {/* Player container */}
                     <div 
                       ref={expandedPlayerRef}
-                      className='relative z-50 backdrop-blur-md rounded-2xl m-4 flex flex-col w-full max-w-sm'
-                      style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
+                      className='relative z-50 backdrop-blur-md rounded-2xl m-4 flex flex-col w-full max-w-sm bg-black'
+          
                       onTouchStart={handleExpandedTouchStart}
                       onTouchMove={handleExpandedTouchMove}
                       onTouchEnd={handleExpandedTouchEnd}
                     >
                       {/* Main content container */}
-                      <div className='flex flex-col items-center justify-center px-2 py-8'>
+                      <div className='flex flex-col items-center justify-center px-4 py-4'>
                           {/* Title */}
-                          <div className='text-center mb-4'>
+                          <div className='text-center mb-2'>
                             <span className='font-thunder-bold text-white text-center block' style={{fontSize: '32px', lineHeight: '1.1'}}>
                               {trackList.name}
                             </span>
                           </div>
                           
                           {/* Artist */}
-                          <div className='text-center mb-8'>
+                          <div className='text-center mb-4'>
                             <span className='text-neutral-silver-200' style={{fontSize: '16px'}}>
                               {trackList?.authors?.join(', ')}
                             </span>

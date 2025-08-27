@@ -6,6 +6,7 @@ export default function ProgressBar({ timeProgress, duration, progressBarRef, au
 
   const handleProgressChange = () => {
     if (isSharedLink) return; // No permitir cambios si es un link compartido
+    if (!audioRef.current || !progressBarRef.current) return;
     audioRef.current.currentTime = progressBarRef.current.value;
   }
 
@@ -16,12 +17,6 @@ export default function ProgressBar({ timeProgress, duration, progressBarRef, au
         'flex-col gap-2': open,
         'gap-1.5': !open
       })}>
-        {open && (
-          <div className='grid grid-cols-2 w-full'>
-            <div className='text-sm'>{format.time(timeProgress)}</div>
-            <div className='text-sm text-right text-neutral-silver-200'>{format.time(duration)}</div>
-          </div>
-        )}
         <input
           type='range'
           defaultValue={0}
@@ -35,6 +30,12 @@ export default function ProgressBar({ timeProgress, duration, progressBarRef, au
           ref={progressBarRef}
           onChange={handleProgressChange}
         />
+        {open && (
+          <div className='grid grid-cols-2 w-full'>
+            <div className='text-sm'>{format.time(timeProgress)}</div>
+            <div className='text-sm text-right text-neutral-silver-200'>{format.time(duration)}</div>
+          </div>
+        )}
       </div>
     </>
   )

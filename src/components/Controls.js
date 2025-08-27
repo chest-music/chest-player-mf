@@ -38,7 +38,7 @@ export default function Controls({
   const { play, next, previous, playing } = getPlaylistActions();
 
   const repeat = useCallback(() => {
-    if (audioRef.current) {
+    if (audioRef.current && progressBarRef.current) {
       const currentTime = audioRef.current.currentTime;
       const duration = audioRef.current.duration;
   
