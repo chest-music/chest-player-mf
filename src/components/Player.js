@@ -528,13 +528,17 @@ export default function Player() {
                   </div>
                 ) : (
                   <div className='fixed inset-0 z-50 flex items-center justify-center'>
-                    {/* Transparent overlay at 50% */}
-                    <div className='absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-60'></div>
+                    {/* Transparent overlay at 60% */}
+                    <div 
+                      className='absolute top-0 left-0 w-screen h-screen'
+                      style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
+                    ></div>
                     
                     {/* Player container */}
                     <div 
                       ref={expandedPlayerRef}
-                      className='relative z-50 bg-black bg-opacity-60 backdrop-blur-md rounded-2xl m-4 flex flex-col w-full max-w-sm'
+                      className='relative z-50 backdrop-blur-md rounded-2xl m-4 flex flex-col w-full max-w-sm'
+                      style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
                       onTouchStart={handleExpandedTouchStart}
                       onTouchMove={handleExpandedTouchMove}
                       onTouchEnd={handleExpandedTouchEnd}
@@ -558,9 +562,14 @@ export default function Player() {
                           {/* Cover */}
                           <div className='mb-8 w-full px-4'>
                             <div
-                              className='w-full aspect-square bg-cover shadow-2xl max-w-sm mx-auto'
+                              className='w-full shadow-2xl max-w-sm mx-auto'
                               style={{ 
+                                aspectRatio: '1',
+                                minHeight: '200px',
                                 backgroundImage: `url(${trackList.cover_url || 'https://cdn.chestmusic.com/cover-default.jpg'})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
                                 borderRadius: '11px'
                               }}>
                             </div>
