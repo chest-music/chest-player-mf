@@ -19,7 +19,19 @@ const getPlaylistActions = () => {
     play: () => console.log('Play action not injected'),
     next: () => console.log('Next action not injected'),
     previous: () => console.log('Previous action not injected'),
-    playing: () => console.log('Playing action not injected')
+    playing: () => console.log('Playing action not injected'),
+    toggleShuffle: () => console.log('ToggleShuffle action not injected')
+  };
+};
+
+// Get playlist state from injected dependencies
+const getPlaylistState = () => {
+  if (typeof window !== 'undefined' && window.__CHEST_PLAYER_DEPS__?.reduxProps?.playlistState) {
+    return window.__CHEST_PLAYER_DEPS__.reduxProps.playlistState;
+  }
+  return {
+    shuffle: false,
+    context: 'my-chest'
   };
 };
 
@@ -35,7 +47,8 @@ export default function Controls({
   mobileExpanded = false
 }) {
   const playAnimationRef = useRef();
-  const { play, next, previous, playing } = getPlaylistActions();
+  const { play, next, previous, playing, toggleShuffle } = getPlaylistActions();
+  const playlistState = getPlaylistState();
 
   const repeat = useCallback(() => {
     if (audioRef.current && progressBarRef.current) {
@@ -80,21 +93,15 @@ export default function Controls({
   }
 
   const skipForward = () => {
-    if (playlist[0]?.token) {
-      // Si estamos en la página compartida, no hacemos nada
-      return;
-    }
-    // Cambiar al siguiente tema
     next();
   }
 
   const skipBackward = () => {
-    if (playlist[0]?.token) {
-  
-      return;
-    }
-
     previous();
+  }
+
+  const handleToggleShuffle = () => {
+    toggleShuffle();
   }
 
   const handleTrackEnd = () => {
@@ -161,7 +168,11 @@ export default function Controls({
     return (
       <div className='w-full px-4 flex items-center justify-between'>
         {/* Shuffle (Left) */}
-        <button type='button' className='opacity-30' disabled>
+        <button 
+          type='button' 
+          className={`${playlistState.shuffle ? 'text-brand-gold' : 'text-neutral-silver-200 hover:text-white'}`}
+          onClick={handleToggleShuffle}
+        >
           <ShuffleIcon width={20} height={20} />
         </button>
         
@@ -197,7 +208,11 @@ export default function Controls({
   return (
     <>
       <div className='flex items-center'>
-        <button type='button' className='p-2 mr-2 disabled:opacity-30' disabled>
+        <button 
+          type='button' 
+          className={`p-2 mr-2 ${playlistState.shuffle ? 'player-controls-active' : 'player-controls'}`}
+          onClick={handleToggleShuffle}
+        >
           <ShuffleIcon />
         </button>
         <button type='button' onClick={skipBackward} className='p-2 player-controls'>

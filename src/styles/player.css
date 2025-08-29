@@ -83,13 +83,20 @@
 }
 
 .player-progressbar input[type="range"]::-webkit-slider-thumb {
-  @apply bg-brand-gold w-1.5 h-1.5 rounded-full appearance-none transition-transform duration-300;
+  @apply appearance-none;
+  width: 0;
+  height: 0;
+  opacity: 0;
 }
 
-.player-progressbar input[type="range"]:active::-webkit-slider-thumb,
-.player-progressbar input[type="range"]:hover::-webkit-slider-thumb {
-  transform: scale(2);
+.player-progressbar input[type="range"]::-moz-range-thumb {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  border: none;
+  background: transparent;
 }
+
 
 .player-volume input[type="range"] {
   position: relative;
