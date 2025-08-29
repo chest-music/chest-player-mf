@@ -170,7 +170,7 @@ export default function Controls({
         {/* Shuffle (Left) */}
         <button 
           type='button' 
-          className={`${playlistState.shuffle ? 'text-brand-gold' : 'text-neutral-silver-200 hover:text-white'}`}
+          className={`${playlistState.shuffle ? 'player-controls-active' : 'player-controls'}`}
           onClick={handleToggleShuffle}
         >
           <ShuffleIcon width={20} height={20} />
@@ -197,7 +197,7 @@ export default function Controls({
         {/* Repeat (Right) */}
         <button
           type='button'
-          className={`${loop ? 'text-white' : 'text-neutral-silver-200 hover:text-white'}`}
+          className={`${loop ? 'player-controls-active' : 'player-controls'}`}
           onClick={toggleLoop}>
           <RepeatIcon width={20} height={20} />
         </button>
