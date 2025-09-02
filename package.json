@@ -65,8 +65,8 @@
   "bugs": {
     "url": "https://github.com/chest-music/chest-player-mf/issues"
   },
-  "homepage": "https://github.com/chest-music/chest-player-mf#readme",
-  "dependencies": {
-    "chest-music": "file:../chest-music"
-  }
+  "homepage": "https://github.com/chest-music/chest-player-mf#readme"
+ 
+
+
 }
