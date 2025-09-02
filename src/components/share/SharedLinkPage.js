@@ -3,6 +3,7 @@ const { useState, useEffect } = React;
 import { capitalize } from '../../utils/capitalize';
 import SharedLinkBanner from './SharedLinkBanner';
 import useMediaQuery from '../../hooks/useMediaQuery';
+import { useSEOMetadata } from '../../hooks/useSEOMetadata';
 
 /**
  * SharedLinkPage component - displays shared track with SEO optimization
@@ -14,6 +15,8 @@ import useMediaQuery from '../../hooks/useMediaQuery';
  * @param {React.ComponentType} [props.PlayerComponent] - Player component to embed
  * @param {Object} [props.playerProps] - Props to pass to player component
  * @param {Function} [props.onPlayTrack] - Callback when track is played
+ * @param {boolean} [props.enableSEO] - Enable SEO metadata updates
+ * @param {string} [props.baseUrl] - Base URL for share links
  */
 export default function SharedLinkPage({
   track,
@@ -21,10 +24,20 @@ export default function SharedLinkPage({
   showPlayer = false,
   PlayerComponent = null,
   playerProps = {},
-  onPlayTrack = null
+  onPlayTrack = null,
+  enableSEO = true,
+  baseUrl = ''
 }) {
   const [displayBanner, setDisplayBanner] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
+
+  // SEO metadata generation
+  const seoData = useSEOMetadata(track, { 
+    enabled: enableSEO,
+    baseTitle: 'Chest Music',
+    baseDescription: 'Escucha esta canción en Chest Music - El hogar de tus maquetas',
+    siteName: 'Chest Music'
+  });
 
   // Prevent hydration error
   useEffect(() => {

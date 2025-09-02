@@ -1,5 +1,6 @@
 // Utility functions to transform between different track formats
 // Maintains compatibility between share repo and player formats
+import { capitalize } from './capitalize';
 
 /**
  * Transform ShareTrack (from share repo) to ChestTrack (player format)
@@ -110,12 +111,3 @@ function generateTrackId(shareTrack) {
   return `share_${shareTrack.title.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`;
 }
 
-/**
- * Capitalize first letter of string
- * @param {string} str 
- * @returns {string}
- */
-function capitalize(str) {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
