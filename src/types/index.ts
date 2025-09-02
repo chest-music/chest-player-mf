@@ -3,7 +3,10 @@ export type {
   ChestTrack,
   TrackSource,
   SharedTrackData,
-  PlayLimitState
+  PlayLimitState,
+  ShareTrack,
+  SEOMetadata,
+  SocialMetadata
 } from './track';
 
 // Playlist types  

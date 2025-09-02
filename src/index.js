@@ -1,6 +1,7 @@
 // Main exports
 export { default as Player } from './components/Player';
 export { default as PlayerProvider } from './components/PlayerProvider';
+export { default as PlayerWithShare } from './components/PlayerWithShare';
 
 // Individual components for advanced usage
 export { default as Controls } from './components/Controls';
@@ -11,9 +12,18 @@ export { default as ProgressBar } from './components/ProgressBar';
 export { default as ProgressBarMobile } from './components/ProgressBarMobile';
 export { default as VolumeControls } from './components/VolumeControls';
 
+// Share components (NEW)
+export { SharedLinkBanner, SharedLinkPage } from './components/share';
+
 // Hooks
 export { useModal } from './hooks/useModal';
 export { default as useMediaQuery } from './hooks/useMediaQuery';
+export { useSEOMetadata, useShareMetadata } from './hooks/useSEOMetadata';
+
+// Utilities (NEW)
+export * from './utils/trackTransforms';
+export * from './utils/seoHelpers';
+export { capitalize } from './utils/capitalize';
 
 // CSS - This will be extracted during build
 import './styles/player.css';
