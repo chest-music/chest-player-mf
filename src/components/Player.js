@@ -543,6 +543,17 @@ export default function Player() {
                       onTouchMove={handleExpandedTouchMove}
                       onTouchEnd={handleExpandedTouchEnd}
                     >
+                      {/* Close button */}
+                      <div className='absolute top-4 right-4 z-60'>
+                        <button 
+                          type='button' 
+                          className='p-2 test' 
+                          onClick={toggleOpen}
+                        >
+                          <ChevronDownIcon className='h-6 w-6 text-white' />
+                        </button>
+                      </div>
+                      
                       {/* Main content container */}
                       <div className='flex flex-col items-center justify-center px-4 py-4'>
                           {/* Title */}

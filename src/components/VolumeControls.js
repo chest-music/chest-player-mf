@@ -3,8 +3,7 @@ const { useEffect, useRef, useState } = React;
 import { 
   SpeakerWaveIcon, 
   SpeakerXMarkIcon, 
-  ChevronDownIcon,
-  ClockIcon } from '@heroicons/react/24/outline';
+  ChevronDownIcon } from '@heroicons/react/24/outline';
 // Get playlist actions from injected dependencies
 const getPlaylistActions = () => {
   if (typeof window !== 'undefined' && window.__CHEST_PLAYER_DEPS__?.playlistActions) {
@@ -49,9 +48,6 @@ export default function VolumeControls({ audioRef, dispatch }) {
   return (
     <>
       <div className='flex items-center justify-end player-volume'>
-        <button type='button' className='p-2 disabled:opacity-30' disabled>
-          <ClockIcon className='h-6 w-6 text-neutral-silver-200' />
-        </button>
         <button type='button' className='p-2' onClick={toggleMuted}>
           {volume === 0 ?
             <SpeakerXMarkIcon className='h-6 w-6 text-neutral-silver-200' /> :
